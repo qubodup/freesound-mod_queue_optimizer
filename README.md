@@ -16,7 +16,6 @@ PRESS PLAY TO SEE ANIMATION BELOW
 ## how to install
 
 1. Have Stylus (Chrome/Firefox) extension installed in your browser
-2. Copy the text content of [freesound_mod_queue_optimizer.css](https://raw.githubusercontent.com/qubodup/freesound-mod_queue_optimizer/main/freesound_mod_queue_optimizer.css)
-3. Create a new userstyle in the Stylus extension
-4. Paste the text and save
-5. Navigate to https://freesound.org/tickets/moderation/ , press "Your Queue" and enjoy
+2. Download the file [freesound_mod_queue_optimizer.css](https://raw.githubusercontent.com/qubodup/freesound-mod_queue_optimizer/main/freesound_mod_queue_optimizer.css)
+3. Import the userstyle file in the Stylus extension
+4. Navigate to https://freesound.org/tickets/moderation/ , press "Your Queue" and enjoy
