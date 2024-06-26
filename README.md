@@ -3,9 +3,9 @@ Minimal full width moderation with color warnings
 
 ## what it looks like
 
-PRESS PLAY TO SEE ANIMATION BELOW
-
 ### userstyle
+
+PRESS PLAY TO SEE ANIMATION BELOW
 > ![basic usage animation](https://github.com/qubodup/freesound-mod_queue_optimizer/blob/main/freesound_mod_queue_optimizer-preview.gif)
 <br>(names and profile pictures are censored)
 
