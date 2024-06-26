@@ -28,6 +28,12 @@ Many thanks!`
     let text_howto = `\nTo edit the title/description/keywords: 1. Click the sound name on the right 2. Click "Edit sound description" 3. When done, click "Save sound description"`
 
     let text_deviceplz = `Thank you for contributing! The sound is now public. We also encourage sharing recording devices used (optional - click the sound name on the right, then click \"Edit sound description\" and save)`
+    let text_tagsplz =
+`Thank you for contributing! The sound is now public. We also encourage adding more tags to make the sound easier to search (click the sound name on the right, then click \"Edit sound description\" and save)
+For example:
+
+
+Many thanks!`
 
     let text_silent = `Thank you for sharing! The file has unusual amounts of silence padding, which is a common issue with some software. Please re-upload the sound without long sections of complete silence in the file.`
 
@@ -61,15 +67,16 @@ If not yours: please let us know from where.`
 
     // Add quick moderation buttons
 let text_all_buttons =
-`<a class='morebuttons' id='quick-device' data-text='` + text_deviceplz + `' title='✅ but 🎤?'>👍🎤?</a>` + text_sep + `
-<a class='morebuttons' id='quick-language' data-action='Defer' data-text='` + text_language + `' title='plz fix language'>🌎lng</a>` + text_sep + `
-<a class='morebuttons' id='quick-timeout' data-action='Defer' data-text='\nPlease note this ticket will time out in two weeks.' title='timeout in 2 weeks'>🕑2w</a>` + text_sep + `
-<a class='morebuttons' id='quick-silent' data-action='Defer' data-text=` + text_silent + `">silent reup</a>` + text_sep + `
-<a class='morebuttons' id='quick-recording' data-action='Defer' data-text='` + text_recording + `'>your rec﹖</a>` + text_sep + `
-<a class='morebuttons' id='quick-composition' data-action='Defer' data-text='` + text_composition + `'>your comp﹖</a>` + text_sep + `
-<a class='morebuttons' id='quick-clarify' data-action='Defer' data-text='` + text_clarify + `'>clarify origin﹖</a>` + text_sep + `
-<a class='morebuttons' id='quick-meme' data-action='Delete' data-text='` + text_meme + `'>🛇meme</a>` + text_sep + `
-<a class='morebuttons' id='quick-howto' data-text='` + text_howto + `'>﹖Howto</a>` + text_sep
+`<a class='morebuttons' id='quick-device' data-text='` + text_deviceplz + `' title='✅ but 🎤?'>👍🎤?</a>` + text_sep +
+`<a class='morebuttons' id='quick-tags' data-text='` + text_tagsplz + `' title='✅ but 🏷?'>👍🏷?</a>` + text_sep +
+`<a class='morebuttons' id='quick-language' data-action='Defer' data-text='` + text_language + `' title='plz fix language'>🌎lng</a>` + text_sep +
+`<a class='morebuttons' id='quick-timeout' data-action='Defer' data-text='\nPlease note this ticket will time out in two weeks.' title='timeout in 2 weeks'>🕑2w</a>` + text_sep +
+`<a class='morebuttons' id='quick-silent' data-action='Defer' data-text=` + text_silent + `">silent reup</a>` + text_sep +
+`<a class='morebuttons' id='quick-recording' data-action='Defer' data-text='` + text_recording + `'>your rec﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-composition' data-action='Defer' data-text='` + text_composition + `'>your comp﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-clarify' data-action='Defer' data-text='` + text_clarify + `'>clarify origin﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-meme' data-action='Delete' data-text='` + text_meme + `'>🛇meme</a>` + text_sep +
+`<a class='morebuttons' id='quick-howto' data-text='` + text_howto + `'>﹖Howto</a>` + text_sep
 $("#template-responses > span:nth-child(1)").after(text_all_buttons);
 
     console.log(text_all_buttons);
