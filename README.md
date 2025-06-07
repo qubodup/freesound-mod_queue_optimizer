@@ -9,6 +9,10 @@ PRESS PLAY TO SEE ANIMATION BELOW
 > ![basic usage animation](https://github.com/qubodup/freesound-mod_queue_optimizer/blob/main/freesound_mod_queue_optimizer-preview.gif)
 <br>(names and profile pictures are censored)
 
+#### updated 2025-06 3 column look to make room for comments
+
+![image](https://github.com/user-attachments/assets/907b7932-8562-46d9-9721-90632b64a8ac)
+
 ### userscript
 
 > ![basic usage animation](https://github.com/qubodup/freesound-mod_queue_optimizer/blob/main/freesound_mod_queue_optimizer_userscript-preview.png)
