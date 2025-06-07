@@ -5,7 +5,7 @@
 // @description  Reduce burnout
 // @author       qubodup
 // @match        https://freesound.org/tickets/moderation/assigned/*
-// @require      https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js
+// @require      https://code.jquery.com/jquery-3.7.1.min.js
 // @icon         data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAuklEQVQImU3OMQqCYByG8RfrDJl9kHgAiSDoBFHHaOtIDjl0AtGgRSxaIwhpCJqsUCsw0M/hC0n/DRL0G5/pAf0cDj79kfBj20sASfIqigKABEAIkabZ6XT2vI1lLaMoripq6Ho/CC7X662qSs/bKkq7LD+73V6aTEauu/b9Y6+nZ1nGWMdxVuPxCET0eDyn01kQXAxjbpqLMAw5500AstzSNFVVu8PhQIg3YwwA6rk4vhMR5zzP87p8AViZfMpUVopVAAAAAElFTkSuQmCC
 // ==/UserScript==
 
@@ -84,6 +84,15 @@ Many thanks!`
 Freesound only hosts files that are not copyright infringing. We reject audio taken from copyright protected media without permission. Please do not upload work owned by others. Only sounds that you have 🔨made yourself or own the copyright.
 
 Additional comment: archive.org might be an appropriate place for archiving memes. On freesound, copyright is core and it is mostly impossible to clarify the legal status of random memes.
+
+If you would like to find out what you can upload, please take a look at https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound
+
+Thank you for your understanding!`
+
+    let text_copymusic =
+`Thank you for contributing to Freesound. Unfortunately we had to delete this sound.
+
+Freesound only hosts files that are not copyright infringing. It appears that music playing in the recording is copyrighted.
 
 If you would like to find out what you can upload, please take a look at https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound
 
@@ -180,6 +189,7 @@ let text_all_buttons =
 `<a class='morebuttons' id='quick-recording' data-action='Defer' data-text='` + text_recording + `'>your 🎤rec﹖</a>` + text_sep +
 `<a class='morebuttons' id='quick-composition' data-action='Defer' data-text='` + text_composition + `'>your 🎶﹖</a>` + text_sep +
 `<a class='morebuttons' id='quick-clarify' data-action='Defer' data-text='` + text_clarify + `'>clarify origin﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-meme' data-action='Delete' data-text='` + text_copymusic + `'>🛇🎵©</a>` + text_sep +
 `<a class='morebuttons' id='quick-meme' data-action='Delete' data-text='` + text_meme + `'>🛇meme</a>` + text_sep +
 `<a class='morebuttons' id='quick-game' data-action='Delete' data-text='` + text_game + `'>🛇🎮🕹</a>` + text_sep +
 `<a class='morebuttons' id='quick-filehost' data-action='Defer' data-text='` + text_filehost + `' title='file host?'>📁host</a>` + text_sep +
@@ -227,7 +237,7 @@ $('a.morebuttons').click(function(){
     const style = document.createElement('style');
     style.textContent = `
 a.morebuttons { background-color: white; }
-td.onlyone { background-color: PeachPuff; }
+tr > td:nth-child(2).onlyone { background-color: PeachPuff !important; border-width: 0 1px; border-color: #333; border-style: solid; }
 `
     document.head.append(style);
 
@@ -340,5 +350,79 @@ td.onlyone { background-color: PeachPuff; }
 
         }
     });
+
+    /* 2025-06 upgrade: color users if present multiple times in list */
+    (function () {
+        const $rows = $('#assigned-tickets-table tbody tr');
+        const idMap = {};
+
+        // Collect IDs and count occurrences
+        $rows.each(function () {
+            const $link = $(this).find('td:nth-child(2) a[data-modal-content-url]');
+            const url = $link.attr('data-modal-content-url');
+            const match = url?.match(/\/annotations\/(\d+)\//);
+            if (match) {
+                const id = match[1];
+                if (!idMap[id]) idMap[id] = [];
+                idMap[id].push($(this).find('td:nth-child(2)'));
+            }
+        });
+
+        // Only style IDs that occur more than once
+        for (const id in idMap) {
+            if (idMap[id].length <= 1) continue;
+
+            // Generate a stable, high-contrast color from ID
+            const color = idToColor(id);
+            const textColor = getReadableTextColor(color);
+
+            // Apply styles
+            idMap[id].forEach($td => {
+                $td[0].style.setProperty('background-color', color, 'important');
+                $td[0].style.setProperty('color', textColor, 'important');
+                $td.find('a')[0].style.setProperty('color', textColor, 'important');
+            });
+        }
+
+        // Utility: generate visually distinct color from ID
+        function idToColor(id) {
+            const hash = murmurhash3(id);
+            const hue = hash % 360;
+            const sat = 70 + (hash % 20); // 70–89%
+            const light = 50 + ((hash >> 3) % 10); // 50–59%
+            return `hsl(${hue}, ${sat}%, ${light}%)`;
+        }
+
+        // Utility: determine readable text color (black or white)
+        function getReadableTextColor(bgColor) {
+            const dummy = $('<div>').css('color', bgColor).appendTo('body');
+            const rgb = dummy.css('color').match(/\d+/g).map(Number);
+            dummy.remove();
+            const [r, g, b] = rgb;
+            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            return brightness > 128 ? 'black' : 'white';
+        }
+
+        // Simple MurmurHash3 (32-bit) hash to get stable pseudo-randomness from id
+        function murmurhash3(key, seed = 0) {
+            let h1 = seed ^ key.length;
+            for (let i = 0; i < key.length; i++) {
+                let k1 = key.charCodeAt(i);
+                k1 = Math.imul(k1, 0xcc9e2d51);
+                k1 = (k1 << 15) | (k1 >>> 17);
+                k1 = Math.imul(k1, 0x1b873593);
+                h1 ^= k1;
+                h1 = (h1 << 13) | (h1 >>> 19);
+                h1 = Math.imul(h1, 5) + 0xe6546b64;
+            }
+            h1 ^= key.length;
+            h1 ^= h1 >>> 16;
+            h1 = Math.imul(h1, 0x85ebca6b);
+            h1 ^= h1 >>> 13;
+            h1 = Math.imul(h1, 0xc2b2ae35);
+            h1 ^= h1 >>> 16;
+            return h1 >>> 0;
+        }
+    })();
 
 })();
