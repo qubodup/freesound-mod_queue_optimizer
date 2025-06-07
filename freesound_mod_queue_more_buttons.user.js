@@ -300,25 +300,45 @@ td.onlyone { background-color: PeachPuff; }
 
     /* 2025-06 upgrade: CTRL+arrow key for up/down navigation in sound list for quick comparison of mass uploads */
 
-    document.addEventListener('keydown', function (e) {
-        // Only trigger on Ctrl + ArrowUp or Ctrl + ArrowDown
-        if ((e.ctrlKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) && !e.repeat) {
-            const table = document.querySelector('table#assigned-tickets-table');
-            if (!table) return;
+    $(document).on('keydown', function (e) {
+        // Only trigger on Ctrl + ArrowUp or ArrowDown and ignore repeats
+        if ((e.ctrlKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) && !e.originalEvent.repeat) {
+            const $table = $('#assigned-tickets-table');
+            if ($table.length === 0) return;
 
-            const rows = Array.from(table.querySelectorAll('tbody tr'));
-            const selectedIndex = rows.findIndex(row => row.classList.contains('selected'));
+            const $rows = $table.find('tbody tr');
+            const $selected = $rows.filter('.selected');
 
-            if (selectedIndex === -1) return;
+            // If not exactly one selected row
+            if ($selected.length === 0) { // select first
+                const $firstRowLabel = $rows.eq(0).find('td:first label');
+                if ($firstRowLabel.length) $firstRowLabel.click();
+                return;
+            } else if ($selected.length > 1) { // abort and warn
+                const $selectNone = $('#select-none');
+                $selectNone.css('background-color', 'red')
+                    .animate({ opacity: 0 }, 50)
+                    .animate({ opacity: 1 }, 250, function () {
+                    $selectNone.css('background-color', '');
+                });
+                return;
+            }
 
-            let targetIndex = e.key === 'ArrowUp' ? selectedIndex - 1 : selectedIndex + 1;
-            if (targetIndex < 0 || targetIndex >= rows.length) return;
+            const index = $rows.index($selected);
+            let $targetRow;
 
-            const targetRow = rows[targetIndex];
-            const label = targetRow?.querySelector('td:first-child label');
-            if (label) label.click();
+            if (e.key === 'ArrowUp' && index > 0) {
+                $targetRow = $rows.eq(index - 1);
+            } else if (e.key === 'ArrowDown' && index < $rows.length - 1) {
+                $targetRow = $rows.eq(index + 1);
+            }
+
+            if ($targetRow && $targetRow.length) {
+                const $label = $targetRow.find('td:first label');
+                if ($label.length) $label.click();
+            }
+
         }
     });
-
 
 })();
