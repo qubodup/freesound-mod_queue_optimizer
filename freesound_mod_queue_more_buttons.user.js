@@ -245,9 +245,12 @@ td.onlyone { background-color: PeachPuff; }
         };
     }
 
-    // Parse date string like "Jan. 2, 2025, 6:27 p.m." to Date object
+    // Parse date string like "Jan. 2, 2025, 6:27 p.m." or "June 5, 2024, 5:40 p.m."
     function parseDateString(dateStr) {
-        const cleaned = dateStr.replaceAll('.', '').replace('pm', 'PM').replace('am', 'AM');
+        const cleaned = dateStr
+        .replace(/\./g, '') // Remove all periods
+        .replace(/\bpm\b/i, 'PM') // Normalize pm
+        .replace(/\bam\b/i, 'AM'); // Normalize am
         const date = new Date(cleaned);
         return isNaN(date) ? null : date;
     }
@@ -263,7 +266,8 @@ td.onlyone { background-color: PeachPuff; }
     function checkCommentsSection() {
         const spans = document.querySelectorAll('#ticket-comments-section span.text-grey:not(.more-buttons-checked)');
         spans.forEach(span => {
-            const match = span.textContent.match(/\w+\.\s+\d{1,2},\s+\d{4}/); // Match e.g. Jan. 2, 2025
+            // Match formats like "Jan. 2, 2025, 6:27 p.m." or "June 5, 2024, 5:40 p.m."
+            const match = span.textContent.match(/\b(?:\w+\.*)\s+\d{1,2},\s+\d{4},\s+\d{1,2}:\d{2}\s*[ap]\.m\./i);
             if (match) {
                 const date = parseDateString(match[0]);
                 if (date) {
