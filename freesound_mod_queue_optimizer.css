@@ -196,4 +196,35 @@ a#select-other {
     border-left: 4px solid turquoise;
     padding-left: 8px;
 }
+
+/* deferred row color switch */
+.tickets-table tr.deferred:nth-child(2n) td
+{
+    background-color: #cacace !important;
+}
+.tickets-table tr.deferred:nth-child(2n+1) td
+{
+    background-color: #dfdfe8 !important;
+}
+.tickets-table tr.deferred.selected td
+{
+    background-color: #ffdd44 !important;
+}
+/* default row name color */
+.tickets-table tr > td:nth-child(2),
+.tickets-table tr > td:nth-child(2) > a
+{
+    color: black;
+}
+/* mark deferred */
+.tickets-table tr.deferred > td:nth-child(4)
+{
+    color: #333 !Important;
+    background-color: #888 !important;
+}
+.tickets-table tr[data-ticket-status="accepted"] > td:nth-child(4)
+{
+    color: #333 !Important;
+    background-color: #fff !important;
+}
 }
