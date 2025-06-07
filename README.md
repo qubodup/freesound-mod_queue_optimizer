@@ -9,9 +9,9 @@ PRESS PLAY TO SEE ANIMATION BELOW
 > ![basic usage animation](https://github.com/qubodup/freesound-mod_queue_optimizer/blob/main/freesound_mod_queue_optimizer-preview.gif)
 <br>(names and profile pictures are censored)
 
-#### updated 2025-06 3 column look to make room for comments
+#### updated 2025-06 3 column layour to make room for comments + colored groups by same uploader
 
-![image](https://github.com/user-attachments/assets/907b7932-8562-46d9-9721-90632b64a8ac)
+![Freesound_-_Moderation_-_Your_queue_-_Google_Chrom_25-06-07_22-46-43_65z](https://github.com/user-attachments/assets/f77d772e-9935-4649-b0aa-d994ae8b3501)
 
 ### userscript
 
