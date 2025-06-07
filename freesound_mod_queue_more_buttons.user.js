@@ -298,4 +298,27 @@ td.onlyone { background-color: PeachPuff; }
     // Initial run
     checkCommentsSection();
 
+    /* 2025-06 upgrade: CTRL+arrow key for up/down navigation in sound list for quick comparison of mass uploads */
+
+    document.addEventListener('keydown', function (e) {
+        // Only trigger on Ctrl + ArrowUp or Ctrl + ArrowDown
+        if ((e.ctrlKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) && !e.repeat) {
+            const table = document.querySelector('table#assigned-tickets-table');
+            if (!table) return;
+
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            const selectedIndex = rows.findIndex(row => row.classList.contains('selected'));
+
+            if (selectedIndex === -1) return;
+
+            let targetIndex = e.key === 'ArrowUp' ? selectedIndex - 1 : selectedIndex + 1;
+            if (targetIndex < 0 || targetIndex >= rows.length) return;
+
+            const targetRow = rows[targetIndex];
+            const label = targetRow?.querySelector('td:first-child label');
+            if (label) label.click();
+        }
+    });
+
+
 })();
