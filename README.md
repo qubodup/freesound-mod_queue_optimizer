@@ -40,7 +40,7 @@ PRESS PLAY TO SEE ANIMATION BELOW
 ### userscript
 
 1. Have Tampermonkey (Chrome) or Greasemonkey (Firefox) extension installed in your browser
-2. Copy the text content of https://raw.githubusercontent.com/qubodup/freesound-mod_queue_optimizer/main/freesound_mod_queue_more_buttons.js
+2. Copy the text content of https://raw.githubusercontent.com/qubodup/freesound-mod_queue_optimizer/main/freesound_mod_queue_more_buttons.user.js
 3. Create a new script in the Tampermonkey/Greasemonkey extension
 4. Paste the text (overwriting the defaults) and save
 4. Navigate to https://freesound.org/tickets/moderation/ , press "Your Queue" and enjoy
