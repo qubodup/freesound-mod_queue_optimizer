@@ -1,5 +1,5 @@
 @-moz-document url-prefix("https://freesound.org/tickets/moderation/assigned/") {
-/* WARNING FFS */
+/* WARNING */
 
 #moderate-form-wrapper form:has(input[type="radio"][value="Delete"]:checked) {
     background-color: lightcoral;
@@ -71,11 +71,44 @@ body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-ch
     z-index: 2;
 }
 
-body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div 
+/* pagination */
+.bw-pagination_container
 {
-    margin-top: 20px;
+    font-size: small;
+    border-style: solid;
+    border-color: grey;
+    border-width: 0 0 1px 0;
+}
+.bw-pagination_container li
+{
+    height: 20px !important;
+    line-height: 20px;
 }
 
+/* compact options */
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4 > div.text-grey
+{
+    display: none;
+}
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4 > div:not(.text-grey)
+{
+    font-size: x-small;
+    display: inline-block;
+}
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4
+{
+    border-style: solid;
+    border-color: grey;
+    border-width: 0 0 1px 0;
+}
+
+/* space at the top */
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div 
+{
+    margin-top: 14px;
+}
+
+/* make list big */
 body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-3 {
     overflow-y: auto !important;
     max-height: none !important;
@@ -96,20 +129,52 @@ div.container
 }
 
 /* split */
-body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7,
+
+/* left side */
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7
+{
+    float: left;
+    flex: 0 0 66%;
+    width: 66%;
+    max-width: 66%;
+}
+
+/* right side (moderation) */
 body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-5
 {
+    float: right;
+    flex: 0 0 34%;
+    width: 34%;
+    max-width: 34%;
+}
+
+/* left side split */
+/* left left (list) */
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div:not(#ticket-comments-section),
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > ul
+{
+    margin: 0;
+    padding: 0;
+    float: left;
     flex: 0 0 50%;
     width: 50%;
     max-width: 50%;
 }
-
-body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7
+/* left right (comments) */
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div#ticket-comments-section
 {
-    float: left;
-}
-body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-5 {
+    margin: 0;
+    padding: 0;
     float: right;
+    flex: 0 0 40%;
+    width: 40%;
+    max-width: 40%;
+}
+
+/* strange margin/padding fix */
+.bw-sticky-top
+{
+    top: auto;
 }
 
 /* color nav */
