@@ -276,7 +276,7 @@ td.onlyone { background-color: PeachPuff; }
 
                     const tag = document.createElement('span');
                     tag.textContent = ` (${days} days ago)`;
-                    tag.style.backgroundColor = 'yellow';
+                    tag.style.backgroundColor = days > 30 ? 'yellow' : 'lightgreen';
                     tag.style.marginLeft = '5px';
 
                     span.appendChild(tag);
