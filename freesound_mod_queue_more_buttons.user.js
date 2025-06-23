@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         More buttons in Freesound Moderation 2025
 // @namespace    https://qubodup.github.io/
-// @version      2025-06-07
+// @version      2025-06-23
 // @description  Reduce burnout
 // @author       qubodup
 // @match        https://freesound.org/tickets/moderation/assigned/*
@@ -43,20 +43,38 @@ We would love to publish it but could you possibly add English title, descriptio
 
 You can keep the original description and simply add the English text. This will ensure that your sounds are discoverable in the search, as our website and user-base primarily work with English.
 
-Also, please include as much detail as you can in the description/tags.
+Also, please include as much detail as you can in the description/tags (press "Edit sound description")
 
-To edit the title/description/keywords: 1. Click the sound name on the right 2. Click "Edit sound description" 3. When done, click "Save sound description"
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
 Many thanks!`
 
     let text_howto = `\nTo edit the title/description/keywords: 1. Click the sound name on the right 2. Click "Edit sound description" 3. When done, click "Save sound description"`
 
-    let text_deviceplz = `Thank you for contributing! The sound is public. We also encourage sharing 🎤recording devices used (in the description, not here)`
-    let text_howplz = `Thank you for contributing! The sound is now public. We also encourage sharing in broad strokes how sounds were 🔨made (in the description, not here)`
+    let text_deviceplz = `Thank you for contributing! The sound is public. You can enhance the description by mentioning 🎤recording devices used (press "Edit sound description").
+
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.`
+
+    let text_toolsplz = `Thank you for contributing! The sound is public. You can enhance the description by mentioning 🔨tools/methods used (press "Edit sound description").
+
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.`
+
+    let text_bothplz = `Thank you for contributing! The sound is public. You can enhance the description by mentioning 🎤recording devices and/or 🔨tools/methods used (press "Edit sound description").
+
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.`
+
+    let text_shortmusicplz = `Thank you for contributing! The sound is public. Please note that although the rules are not yet very clearly laid out, music that is longer than 1 minute might be rejected in the future. Also see https://freesound.org/help/faq/#i-created-a-song-where-can-i-upload-it
+
+[remove if not applicable] We also encourage sharing 🔨tools or 🎤recording devices used (press "Edit sound description")
+
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info`
+
     let text_tagsplz =
-`Thank you for contributing! The sound is now public. We also encourage adding more tags to make the sound easier to search (in the description, not here)
+`Thank you for contributing! The sound is now public. We also encourage adding more tags to make the sound easier to search (press "Edit sound description")
 For example:
 
+
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
 Many thanks!`
 
@@ -64,16 +82,21 @@ Many thanks!`
 
 A substantial part of your sound is silence which likely stems from an accidentally incorrect export (a common issue with some pieces of software).
 
-Please cut and re-upload, and then delete the version with too much silence via https://freesound.org/home/sounds/manage/pending_description/
+Please cut and re-upload, and then delete the version with too much silence via <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage sounds / moderation</a>.
 
-We also encourage sharing 🎤recording devices or 🔨creation process used.
+We also encourage sharing 🎤recording devices or 🔨creation process used. "<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
 Thank you for your understanding!`
 
     let text_clarify =
 `Thank you for contributing! As copyright is key on Freesound, can you please clarify whether you 🔨made the audio or if it is taken from somewhere like a tv show/video game/sound library or anywhere else?
-If it is yours, can you please edit title/tags/description to be descriptive of the sound, so it can be found using search?
-To edit: 1. Click the sound name on the right 2. Click "Edit sound description" 3. When done, click "Save sound description"
+
+If it is yours, can you please edit title/tags/description to be descriptive of the sound, so it can be found using search? (press "Edit sound description")
+
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
+
+If this was generated with AI, please disclose that fact in the description.
+
 (The sound might get deleted after 2 weeks of no action taken)
 
 Many thanks!`
@@ -85,7 +108,7 @@ Freesound only hosts files that are not copyright infringing. We reject audio ta
 
 Additional comment: archive.org might be an appropriate place for archiving memes. On freesound, copyright is core and it is mostly impossible to clarify the legal status of random memes.
 
-If you would like to find out what you can upload, please take a look at https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound
+If you would like to find out what you can upload, please take a look at <a href="https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound">What sounds are legal to put on Freesound?</a>
 
 Thank you for your understanding!`
 
@@ -94,7 +117,7 @@ Thank you for your understanding!`
 
 Freesound only hosts files that are not copyright infringing. It appears that music playing in the recording is copyrighted.
 
-If you would like to find out what you can upload, please take a look at https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound
+If you would like to find out what you can upload, please take a look at <a href="https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound">What sounds are legal to put on Freesound?</a>
 
 Thank you for your understanding!`
 
@@ -105,34 +128,38 @@ Freesound only hosts files that are not copyright infringing. We reject audio ta
 
 Additional comment: The desire to archive game sounds is understandable. archive.org might be an appropriate place for archiving game sounds. A resource even more focused on the topic is sounds-resource.com . On Freesound, copyright is core and sounds in games are all protected by copyright of the developers or the libraries they used for development with only few exceptions like open source games or games that happen to use sounds from Freesound.
 
-If you would like to find out what you can upload, please take a look at https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound
+If you would like to find out what you can upload, please take a look at <a href="https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound">What sounds are legal to put on Freesound?</a>
 
 Thank you for your understanding!`
 
     let text_composition =
 `Thank you for contributing! As copyright is core on Freesound, please clarify whether this is your own 🎶composition or taken from a website/music track/music library?
-If yours: could you please add to the description in general terms how it was 🔨made?
+If yours: could you please add to the description in general terms how it was 🔨made? (press "Edit sound description")
+
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
+
 If not yours: please let us know from where so we can check the copyright situation.
-To edit the sound info: 1. Click the sound name on the right 2. Click "Edit sound description" 3. When done, click "Save sound description"
 
 Many thanks!`
 
     let text_recording =
 `Thank you for contributing! As copyright is core on Freesound, please let us know whether this is your own 🎤recording or taken from a website/sound library?
-If yours: could you please add to the description what device was used to 🎤record it?
+If yours: could you please add to the description what device was used to 🎤record it? (press "Edit sound description")
+
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
+
 If not yours: please let us know from where.
-To edit the sound info: 1. Click the sound name on the right 2. Click "Edit sound description" 3. When done, click "Save sound description"
 
 Many thanks!`
 
     let text_filehost =
 `Hi, as this upload has minimal tags/description, it could be the intent is to use Freesound as a file host.
 
-Freesound is a creative and scientific community, see https://freesound.org/help/faq/#what-is-this-site-anyway
+Freesound is a creative and scientific community, see <a href="https://freesound.org/help/faq/#what-is-this-site-anyway">What is this site anyway?</a>
 
-You can delete uploads at https://freesound.org/home/sounds/manage/pending_moderation/
+You can delete uploads at <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage sounds / moderation</a>.
 
-File hosting services: https://en.wikipedia.org/wiki/Comparison_of_file_hosting_services
+See <a href="https://en.wikipedia.org/wiki/Comparison_of_file_hosting_services">file hosting services comparison on Wikipedia</a>.
 
 Otherwise please clarify.
 
@@ -141,11 +168,11 @@ Many thanks!`
     let text_lazystudent =
 `Hi, as this upload has minimal tags/description, it could be the intent is to use Freesound as a file host.
 
-Freesound is a creative and scientific community, see https://freesound.org/help/faq/#what-is-this-site-anyway
+Freesound is a creative and scientific community, see <a href="https://freesound.org/help/faq/#what-is-this-site-anyway">What is this site anyway?</a>
 
-You can delete uploads at https://freesound.org/home/sounds/manage/pending_moderation/
+You can delete uploads at <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage sounds / moderation</a>.
 
-File hosting services: https://en.wikipedia.org/wiki/Comparison_of_file_hosting_services
+See <a href="https://en.wikipedia.org/wiki/Comparison_of_file_hosting_services">file hosting services comparison on Wikipedia</a>.
 
 
 Otherwise:
@@ -154,16 +181,11 @@ We would love to publish it but could you possibly add English title, descriptio
 
 You can keep the original description and simply add the English text. This will ensure that your sounds are discoverable in the search, as our website and user-base primarily work with English.
 
-Also, please include as much detail as you can in the description/tags.
+Also, please include as much detail as you can in the description/tags (press "Edit sound description")
 
-
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
 Please make sure each sound has their own tags/description that sets it apart from the other sounds.
-
-
-
-To edit the title/description/keywords: 1. Click the sound name on the right 2. Click "Edit sound description" 3. When done, click "Save sound description"
-
 
 Many thanks!`
 
@@ -172,24 +194,26 @@ Many thanks!`
 
 Freesound being a community of creators and researchers means that sounds need to be findable in the sea of 650,000 other sounds. For this reason we ask to add more details describing this sound to set it apart from other files that have similar tags and descriptions.
 
-For example adding some more tags could help others find this creation.
+For example adding some more tags could help others find this creation (press "Edit sound description")
 
-To edit the title/description/keywords: 1. Click the sound name on the right 2. Click "Edit sound description" 3. When done, click "Save sound description"
+"<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
 Many thanks!`
 
     // Add quick moderation buttons
 let text_all_buttons =
 `<a class='morebuttons' id='quick-device' data-text='` + text_deviceplz + `' title='✅ but 🎤?'>👍🎤?</a>` + text_sep +
-`<a class='morebuttons' id='quick-how' data-text='` + text_howplz + `' title='✅ but 🔨?'>👍🔨?</a>` + text_sep +
+`<a class='morebuttons' id='quick-tools' data-text='` + text_toolsplz + `' title='✅ but 🔨?'>👍🔨?</a>` + text_sep +
+`<a class='morebuttons' id='quick-both' data-text='` + text_bothplz + `' title='✅ but 🎤🔨?'>👍🎤🔨?</a>` + text_sep +
+`<a class='morebuttons' id='quick-shortmusic' data-text='` + text_shortmusicplz + `' title='✅🎵 but 1🕑/🔨?'>👍🎵/🕑/🔨?</a>` + text_sep +
 `<a class='morebuttons' id='quick-tags' data-text='` + text_tagsplz + `' title='✅ but 🏷?'>👍🏷?</a>` + text_sep +
 `<a class='morebuttons' id='quick-language' data-action='Defer' data-text='` + text_language + `' title='plz fix language'>🌎lng</a>` + text_sep +
-`<a class='morebuttons' id='quick-timeout' data-action='Defer' data-text='\nPlease note this ticket will time out in two weeks.' title='timeout in 2 weeks'>🕑2w</a>` + text_sep +
+`<a class='morebuttons' id='quick-timeout' data-action='Defer' data-text='\n\nPlease note this ticket will time out in two weeks.' title='timeout in 2 weeks'>🕑2w</a>` + text_sep +
 `<a class='morebuttons' id='quick-silent' data-action='Defer' data-text='` + text_silent + `' title='silent, please re-upload'>🔇</a>` + text_sep +
 `<a class='morebuttons' id='quick-recording' data-action='Defer' data-text='` + text_recording + `'>your 🎤rec﹖</a>` + text_sep +
 `<a class='morebuttons' id='quick-composition' data-action='Defer' data-text='` + text_composition + `'>your 🎶﹖</a>` + text_sep +
 `<a class='morebuttons' id='quick-clarify' data-action='Defer' data-text='` + text_clarify + `'>clarify origin﹖</a>` + text_sep +
-`<a class='morebuttons' id='quick-meme' data-action='Delete' data-text='` + text_copymusic + `'>🛇🎵©</a>` + text_sep +
+`<a class='morebuttons' id='quick-copymusic' data-action='Delete' data-text='` + text_copymusic + `'>🛇🎵©</a>` + text_sep +
 `<a class='morebuttons' id='quick-meme' data-action='Delete' data-text='` + text_meme + `'>🛇meme</a>` + text_sep +
 `<a class='morebuttons' id='quick-game' data-action='Delete' data-text='` + text_game + `'>🛇🎮🕹</a>` + text_sep +
 `<a class='morebuttons' id='quick-filehost' data-action='Defer' data-text='` + text_filehost + `' title='file host?'>📁host</a>` + text_sep +
