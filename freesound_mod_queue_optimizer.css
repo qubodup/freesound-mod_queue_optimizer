@@ -227,4 +227,56 @@ a#select-other {
     color: #333 !Important;
     background-color: #fff !important;
 }
+/* UCS often puts recorder at end of title :/ */
+h5.ellipsis {
+    white-space: normal;
+}
+/* toast blocks too much */
+div.toast {
+    max-width: 400px;
+}
+/*choices take too much space*/
+#id_action > div {
+    display: inline-block !important;
+    margin-right: 8px;
+}
+#id_action span.bw-radio-container {
+    margin-right: -3px !important;
+}
+#id_action > div:nth-child(5) {
+    display: none !important;
+}
+/*saving space*/
+#moderate-form-wrapper > div:nth-child(2) > form > div.v-spacing-top-2.v-spacing-4,
+div#template-responses,
+#moderate-form-wrapper > div:nth-child(2) > form > div.bw-inline-radio > p:nth-child(4),
+#selected-sounds-info
+{
+    margin: 0;
+}
+
+#moderate-form-wrapper > div:nth-child(2) > form > div.bw-inline-radio > p:nth-child(1),
+#moderate-form-wrapper > div:nth-child(2) > form > div.bw-inline-radio > p:nth-child(3)
+{
+    display: none;
+}
+
+#id_message {
+    margin: 0 !important;
+    padding: 2px 4px;
+}
+a.tag-container {
+    border-width: 0;
+    line-height: 1em;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+div[id^="collapsable-sound-info-"] {
+    padding: 0 !important;
+    margin: 0 !important
+}
+/*still saving space*/
+#template-responses > span:nth-child(1) {
+    display:none;
+}
 }
