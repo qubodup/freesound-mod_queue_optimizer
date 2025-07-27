@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         More buttons in Freesound Moderation 2025
 // @namespace    https://qubodup.github.io/
-// @version      2025-06-23
+// @version      2025-07-27
 // @description  Reduce burnout
 // @author       qubodup
 // @match        https://freesound.org/tickets/moderation/assigned/*
@@ -47,9 +47,11 @@ Also, please include as much detail as you can in the description/tags (press "E
 
 "<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
-Many thanks!`
+Many thanks!
 
-    let text_howto = `\nTo edit the title/description/keywords: 1. Click the sound name on the right 2. Click "Edit sound description" 3. When done, click "Save sound description"`
+Please note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
+
+    let text_howto = `\nTo edit the title/description/keywords click "Edit sound description" on the right. When done, click "Save sound description"`
 
     let text_deviceplz = `Thank you for contributing! The sound is public. You can enhance the description by mentioning 🎤recording devices used (press "Edit sound description").
 
@@ -86,7 +88,9 @@ Please cut and re-upload, and then delete the version with too much silence via 
 
 We also encourage sharing 🎤recording devices or 🔨creation process used. "<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
-Thank you for your understanding!`
+Thank you for your understanding!
+
+Please note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
 
     let text_clarify =
 `Thank you for contributing! As copyright is key on Freesound, can you please clarify whether you 🔨made the audio or if it is taken from somewhere like a tv show/video game/sound library or anywhere else?
@@ -97,7 +101,7 @@ If it is yours, can you please edit title/tags/description to be descriptive of 
 
 If this was generated with AI, please disclose that fact in the description.
 
-(The sound might get deleted after 2 weeks of no action taken)
+(The sound might get deleted after 2 weeks of no action taken. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>)
 
 Many thanks!`
 
@@ -132,15 +136,24 @@ If you would like to find out what you can upload, please take a look at <a href
 
 Thank you for your understanding!`
 
+    let text_identify =
+`Thank you for uploading. Unfortunately Freesound cannot host files with infringing or unknown copyright. Please only upload sounds that you have made yourself or own the copyright. More info in "<a href="https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound">What sounds are legal to put on Freesound?</a>"
+
+You can use a file host (Box.com, Dropbox, Google Drive, Mega, OneDrive, Yandex Disk — <a href="https://en.wikipedia.org/wiki/Comparison_of_file_hosting_services">comparison on Wikipedia</a>) and link to the file, asking for example on <a href="https://www.reddit.com/r/Whatisthissound/">r/Whatisthissound</a>, <a href="https://www.reddit.com/r/tipofmytongue/">r/tipofmytongue</a>, <a href="https://www.reddit.com/r/Soundeffects/">r/Soundeffects</a> or the <a href="https://freesound.org/forum/sample-requests/">Freesound forums</a>.
+
+Thank you for your understanding!`
+
     let text_composition =
-`Thank you for contributing! As copyright is core on Freesound, please clarify whether this is your own 🎶composition or taken from a website/music track/music library?
+`Thank you for contributing! As copyright is core on Freesound, please clarify whether this is your own 🎶composition/🔊creation or taken from a website/music track/music library?
 If yours: could you please add to the description in general terms how it was 🔨made? (press "Edit sound description")
 
 "<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
-If not yours: please let us know from where so we can check the copyright situation.
+If not yours: please let us know from where so we can check the copyright situation. Remove copyrighted audio via <a href="https://freesound.org/home/sounds/manage/pending_moderation/">sound manager</a>.
 
-Many thanks!`
+Many thanks!
+
+Please note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
 
     let text_recording =
 `Thank you for contributing! As copyright is core on Freesound, please let us know whether this is your own 🎤recording or taken from a website/sound library?
@@ -148,9 +161,51 @@ If yours: could you please add to the description what device was used to 🎤re
 
 "<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
-If not yours: please let us know from where.
+If not yours: please let us know from where. Remove copyrighted audio via <a href="https://freesound.org/home/sounds/manage/pending_moderation/">sound manager</a>.
 
-Many thanks!`
+Many thanks!
+
+Please note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
+
+    let text_aimusic = `Thank you for sharing. We are pursuing higher description standards for music, especially for >1m. Please clarify the origin of the audio.
+
+Is it your creation?
+
+Can you add info like e.g. "[list of instruments playing] music made in [DAW] with [VST names] at [xx BPM]?
+
+If this is mainly AI generated content please reveal that fact in the description.
+
+If not yours, please clarify the origin.
+
+Please note this ticket will time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
+
+    let text_buggy =
+`This file appears to be corrupt. The file ending might be incorrect or there might be issues with incorrect file types or corrupted encoding on certain Android versions. Please check and delete when done via your <a href="https://freesound.org/home/sounds/manage/pending_moderation/">sound manager</a>.
+
+Please note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
+
+    let text_synth =
+`Thank you for sharing. Please see "sampled a synthesiser" in <a href="https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound" target="_blank">What sounds are legal to put on freesound?</a> and if this sound is infringing, remove it via <a href="https://freesound.org/home/sounds/manage/pending_moderation/">your sound manager</a>.
+
+If it does not apply, please clarify, and if not already done, describe the audio in detail in the description. (press "Edit sound description") "<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
+
+Please note this ticket will time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
+
+    let text_aigen =
+`Thank you for sharing. We are pursuing higher description standards for AI generated content.
+
+Please reveal what AI generation service and (if known) model was used in the description, and add the tag "ai-generated".
+
+If the file is not yours, please clarify the origin.
+
+Please describe the audio in detail. "<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
+
+Please note this ticket will time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
+
+    let text_soundtrap =
+`Thank you for sharing and being transparent. Unfortunately <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45132/" target="_blank">Soundtrap Sample Content cannot be used for work uploaded to Freesound</a>. Please remove affected audio via <a href="https://freesound.org/home/sounds/manage/pending_moderation/" target="_blank">your sound manager</a>. Otherwise please clarify.
+
+Please note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
 
     let text_filehost =
 `Hi, as this upload has minimal tags/description, it could be the intent is to use Freesound as a file host.
@@ -187,7 +242,9 @@ Also, please include as much detail as you can in the description/tags (press "E
 
 Please make sure each sound has their own tags/description that sets it apart from the other sounds.
 
-Many thanks!`
+Many thanks!
+
+Please note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
 
     let text_lazytags =
 `Hey there. Thank you for contributing to Freesound.
@@ -198,7 +255,9 @@ For example adding some more tags could help others find this creation (press "E
 
 "<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
-Many thanks!`
+Many thanks!
+
+Please note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
 
     // Add quick moderation buttons
 let text_all_buttons =
@@ -207,19 +266,25 @@ let text_all_buttons =
 `<a class='morebuttons' id='quick-both' data-text='` + text_bothplz + `' title='✅ but 🎤🔨?'>👍🎤🔨?</a>` + text_sep +
 `<a class='morebuttons' id='quick-shortmusic' data-text='` + text_shortmusicplz + `' title='✅🎵 but 1🕑/🔨?'>👍🎵/🕑/🔨?</a>` + text_sep +
 `<a class='morebuttons' id='quick-tags' data-text='` + text_tagsplz + `' title='✅ but 🏷?'>👍🏷?</a>` + text_sep +
-`<a class='morebuttons' id='quick-language' data-action='Defer' data-text='` + text_language + `' title='plz fix language'>🌎lng</a>` + text_sep +
-`<a class='morebuttons' id='quick-timeout' data-action='Defer' data-text='\n\nPlease note this ticket will time out in two weeks.' title='timeout in 2 weeks'>🕑2w</a>` + text_sep +
-`<a class='morebuttons' id='quick-silent' data-action='Defer' data-text='` + text_silent + `' title='silent, please re-upload'>🔇</a>` + text_sep +
-`<a class='morebuttons' id='quick-recording' data-action='Defer' data-text='` + text_recording + `'>your 🎤rec﹖</a>` + text_sep +
-`<a class='morebuttons' id='quick-composition' data-action='Defer' data-text='` + text_composition + `'>your 🎶﹖</a>` + text_sep +
-`<a class='morebuttons' id='quick-clarify' data-action='Defer' data-text='` + text_clarify + `'>clarify origin﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-language' data-action='Defer' data-text='` + text_language + `' title='plz fix language'>✋🌎lng</a>` + text_sep +
+`<a class='morebuttons' id='quick-timeout' data-action='Defer' data-text='\n\nPlease note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.' title='timeout in 2 weeks '>✋🕑2w</a>` + text_sep +
+`<a class='morebuttons' id='quick-silent' data-action='Defer' data-text='` + text_silent + `' title='silent, please re-upload'>✋🔇</a>` + text_sep +
+`<a class='morebuttons' id='quick-recording' data-action='Defer' data-text='` + text_recording + `'>✋your 🎤rec﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-composition' data-action='Defer' data-text='` + text_composition + `'>✋your 🎶/🔊﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-synth' data-action='Defer' data-text='` + text_synth + `'>✋🎹💻⚙️🎵sampled</a>` + text_sep +
+`<a class='morebuttons' id='quick-aimusic' data-action='Defer' data-text='` + text_aimusic + `'>✋🤖🎶﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-aigen' data-action='Defer' data-text='` + text_aigen + `'>✋🤖🤖🤖﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-clarify' data-action='Defer' data-text='` + text_clarify + `'>✋clarify origin﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-buggy' data-action='Defer' data-text='` + text_buggy + `' title='buggy'>✋💻💀﹖</a>` + text_sep +
+`<a class='morebuttons' id='quick-soundtrap' data-action='Defer' data-text='` + text_soundtrap + `'>✋🎵Soundtrap</a>` + text_sep +
 `<a class='morebuttons' id='quick-copymusic' data-action='Delete' data-text='` + text_copymusic + `'>🛇🎵©</a>` + text_sep +
 `<a class='morebuttons' id='quick-meme' data-action='Delete' data-text='` + text_meme + `'>🛇meme</a>` + text_sep +
 `<a class='morebuttons' id='quick-game' data-action='Delete' data-text='` + text_game + `'>🛇🎮🕹</a>` + text_sep +
-`<a class='morebuttons' id='quick-filehost' data-action='Defer' data-text='` + text_filehost + `' title='file host?'>📁host</a>` + text_sep +
+`<a class='morebuttons' id='quick-identify' data-action='Delete' data-text='` + text_identify + `'>🛇❓❓</a>` + text_sep +
+`<a class='morebuttons' id='quick-filehost' data-action='Defer' data-text='` + text_filehost + `' title='file host?'>✋📁host</a>` + text_sep +
 `<a class='morebuttons' id='quick-howto' data-text='` + text_howto + `'>﹖Howto</a>` + text_sep +
-`<a class='morebuttons' id='quick-lazystudent' data-action='Defer' data-text='` + text_lazystudent + `'>lazy🌎👨‍🎓</a>` + text_sep +
-`<a class='morebuttons' id='quick-lazytags' data-action='Defer' data-text='` + text_lazytags + `'>more tags 🎨🤝⚛🎓</a>` + text_sep
+`<a class='morebuttons' id='quick-lazystudent' data-action='Defer' data-text='` + text_lazystudent + `'>✋lazy🌎👨‍🎓</a>` + text_sep +
+`<a class='morebuttons' id='quick-lazytags' data-action='Defer' data-text='` + text_lazytags + `'>✋more tags 🎨🤝⚛🎓</a>` + text_sep
 $("#template-responses > span:nth-child(1)").after(text_all_buttons);
 
     //console.log(text_all_buttons);
