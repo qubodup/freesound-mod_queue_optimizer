@@ -17,6 +17,45 @@
     background-color: hotpink;
 }
 
+/* WARNING OF BUTTON */
+
+/* Default neutral styling for the submit button */
+#moderate-form-wrapper form button.btn-primary.w-100 {
+    background: white !important;
+    color: black !important;
+    border: 1px solid black !important;
+    transition: background 0s, color 0s;
+}
+
+/* Hover color depends on chosen radio */
+#moderate-form-wrapper form:has(input[type="radio"][value="Approve"]:checked) 
+    button.btn-primary.w-100:hover {
+        background: lightgreen !important;
+}
+
+#moderate-form-wrapper form:has(input[type="radio"][value="Delete"]:checked) 
+    button.btn-primary.w-100:hover {
+        background: lightcoral !important;
+}
+
+#moderate-form-wrapper form:has(input[type="radio"][value="Defer"]:checked) 
+    button.btn-primary.w-100:hover {
+        background: Khaki !important;
+}
+
+#moderate-form-wrapper form:has(input[type="radio"][value="Return"]:checked) 
+    button.btn-primary.w-100:hover {
+        background: lightgrey !important;
+}
+
+#moderate-form-wrapper form:has(input[type="radio"][value="Whitelist"]:checked) 
+    button.btn-primary.w-100:hover {
+        background: hotpink !important;
+}
+
+
+/* WARNING OF BUTTON END */
+
 /* minify */
 html {background-color: white;}
 
@@ -278,5 +317,75 @@ div[id^="collapsable-sound-info-"] {
 /*still saving space*/
 #template-responses > span:nth-child(1) {
     display:none;
+}
+label[for="id_moderator_only"] {
+    background-color: white;
+    padding: 2px 6px 6px;
+}
+label[for="id_moderator_only"]:has(input:checked) {
+    background-color: purple;
+    color: white !important;
+    padding: 2px 6px 6px;
+}
+/* table#assigned-tickets-table declutter */
+table#assigned-tickets-table {
+    width: 100%;
+}
+table#assigned-tickets-table td {
+    padding: 0 1px 1px 2px;
+}
+table#assigned-tickets-table td:nth-child(3) {
+    min-width:24px;
+    width: 5%;
+}
+table#assigned-tickets-table td:nth-child(4),
+table#assigned-tickets-table td:nth-child(5) {
+    text-align: center;
+    min-width:12px;
+    width: 2.5%;
+}
+/*compact selection/player options*/
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4 > div:nth-child(1) > label > span,
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4 > div:nth-child(2) > label > span,
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4 > div:nth-child(3) > label > span {
+    margin-right: 0;
+}
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4 > div:nth-child(1) > label > span > span,
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4 > div:nth-child(2) > label > span > span,
+body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4 > div:nth-child(3) > label > span > span{
+    height: 12px;
+    width: 12px;
+    border-width: 1px;
+    margin-bottom: -2px;
+    margin-right: 4px;
+    margin-left: 14px !important;
+}
+/* too many buttons, starting to sort */
+a[data-action="Defer"]
+{
+    background-color: beige;
+}
+
+a[data-action="Defer"]#quick-spam
+{
+    color: white;
+    background-color: violet;
+}
+
+a[data-action="Delete"]
+{
+    color: white;
+    background-color: salmon;
+}
+/* don't abbr... sound title */
+#selected-sounds-info > div > div.v-spacing-3.overflow-hidden > div.between.line-height-percentage-150.v-spacing-top-1 {
+    flex-wrap: wrap !important;
+}
+.ellipsis {
+    overflow: visible !important;       /* allow overflow */
+    white-space: normal !important;    /* allow line breaks */
+    text-overflow: clip !important;    /* remove ellipsis */
+    word-break: break-word !important; /* break long words if needed */
+    width: 100% !important;            /* ensure it can use full width of container */
 }
 }
