@@ -1,4 +1,11 @@
-@-moz-document url-prefix("https://freesound.org/tickets/moderation/assigned/") {
+/* mod button weirdness */
+
+.morebuttons {
+    display: inline-block;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
 /* WARNING */
 
 #moderate-form-wrapper form:has(input[type="radio"][value="Delete"]:checked) {
@@ -13,44 +20,40 @@
 #moderate-form-wrapper form:has(input[type="radio"][value="Return"]:checked) {
     background-color: lightgrey;
 }
-#moderate-form-wrapper form:has(input[type="radio"][value="Whitelist"]:checked) {
-    background-color: hotpink;
-}
 
 /* WARNING OF BUTTON */
 
 /* Default neutral styling for the submit button */
 #moderate-form-wrapper form button.btn-primary.w-100 {
-    background: white !important;
-    color: black !important;
+    background: black !important;
+    color: white !important;
     border: 1px solid black !important;
     transition: background 0s, color 0s;
 }
 
 /* Hover color depends on chosen radio */
-#moderate-form-wrapper form:has(input[type="radio"][value="Approve"]:checked) 
-    button.btn-primary.w-100:hover {
+#moderate-form-wrapper form:has(input[type="radio"][value="Approve"]:checked) button.btn-primary.w-100:hover,
+#moderate-form-wrapper form:has(input[type="radio"][value="Approve"]:checked) button.btn-primary.w-100:focus {
         background: lightgreen !important;
+        color: black !important;
 }
 
-#moderate-form-wrapper form:has(input[type="radio"][value="Delete"]:checked) 
-    button.btn-primary.w-100:hover {
+#moderate-form-wrapper form:has(input[type="radio"][value="Delete"]:checked) button.btn-primary.w-100:hover,
+#moderate-form-wrapper form:has(input[type="radio"][value="Delete"]:checked) button.btn-primary.w-100:focus {
         background: lightcoral !important;
+        color: black !important;
 }
 
-#moderate-form-wrapper form:has(input[type="radio"][value="Defer"]:checked) 
-    button.btn-primary.w-100:hover {
+#moderate-form-wrapper form:has(input[type="radio"][value="Defer"]:checked) button.btn-primary.w-100:hover,
+#moderate-form-wrapper form:has(input[type="radio"][value="Defer"]:checked) button.btn-primary.w-100:focus {
         background: Khaki !important;
+        color: black !important;
 }
 
-#moderate-form-wrapper form:has(input[type="radio"][value="Return"]:checked) 
-    button.btn-primary.w-100:hover {
+#moderate-form-wrapper form:has(input[type="radio"][value="Return"]:checked) button.btn-primary.w-100:hover,
+#moderate-form-wrapper form:has(input[type="radio"][value="Return"]:checked) button.btn-primary.w-100:focus     {
         background: lightgrey !important;
-}
-
-#moderate-form-wrapper form:has(input[type="radio"][value="Whitelist"]:checked) 
-    button.btn-primary.w-100:hover {
-        background: hotpink !important;
+        color: black !important;
 }
 
 
@@ -85,7 +88,7 @@ body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-ch
 
 body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-1 > div
 {
-    width: 50%;
+    width: 33%;
     padding: 4px;
     margin: 0;
     border-bottom: 1px solid grey;
@@ -282,9 +285,6 @@ div.toast {
 #id_action span.bw-radio-container {
     margin-right: -3px !important;
 }
-#id_action > div:nth-child(5) {
-    display: none !important;
-}
 /*saving space*/
 #moderate-form-wrapper > div:nth-child(2) > form > div.v-spacing-top-2.v-spacing-4,
 div#template-responses,
@@ -338,11 +338,31 @@ table#assigned-tickets-table td:nth-child(3) {
     min-width:24px;
     width: 5%;
 }
-table#assigned-tickets-table td:nth-child(4),
-table#assigned-tickets-table td:nth-child(5) {
+table#assigned-tickets-table td:nth-child(4) {
     text-align: center;
-    min-width:12px;
-    width: 2.5%;
+    min-width:10px;
+    width: 1.5%;
+}
+table#assigned-tickets-table td:nth-child(5) {
+    padding: 0 !important;
+    margin: 0 !important;
+    text-align: center;
+    min-width:20px;
+    width: 4%;
+}
+table#assigned-tickets-table td:nth-child(5) a {
+    background-color: lightgrey;
+    color: black;
+}
+table#assigned-tickets-table td:nth-child(5) a:hover {
+    background-color: black;
+    color: white;
+}
+table#assigned-tickets-table tr:not(.deferred):hover td {
+    background-color: lightgrey ;
+}
+table#assigned-tickets-table tr.deferred:hover td {
+    background-color: grey !important;
 }
 /*compact selection/player options*/
 body > div.bw-page > div > div > div.col-12.no-paddings.v-spacing-5 > div:nth-child(4) > div > div.col-lg-7 > div > div.v-spacing-4 > div:nth-child(1) > label > span,
@@ -388,4 +408,22 @@ a[data-action="Delete"]
     word-break: break-word !important; /* break long words if needed */
     width: 100% !important;            /* ensure it can use full width of container */
 }
+/* nonresponsive animation transition eradicator */
+* {
+    transition: none !important;
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+}
+/* sort dropdown fix */
+#sort-table-select {
+    display: inline-block;
+}
+.ticket-link {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        text-align: center !important;
+        padding: 0 !important;
+        cursor: pointer !important;
 }
