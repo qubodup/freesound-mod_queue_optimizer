@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         More buttons in Freesound Moderation 2025
+// @name         More buttons in Freesound Moderation 2026
 // @namespace    https://qubodup.github.io/
-// @version      2025-12-02
+// @version      2026-05-10
 // @description  Reduce burnout
 // @author       qubodup
 // @match        https://freesound.org/tickets/moderation/assigned/*
@@ -12,9 +12,94 @@
 (function() {
     'use strict';
 
+    // --- Spam title highlighter ---
+    const spamWords = [
+        'Penthouse',
+        'CEO',
+        'Email',
+        'Addresses',
+        'Ghaziabad',
+        'advantage',
+        'branding',
+        'expert',
+        'finan',
+        'Security',
+        'Wearable',
+        'Device',
+        'Guide',
+        'Inventory',
+        'Rudraksha',
+        'Journey',
+        'Trend',
+        'analytics',
+        'data',
+        'Estate',
+        'consult',
+        'agencies',
+        'implement',
+        'provide',
+        'specialist',
+        'hr',
+        'payroll',
+        'Luxury',
+        'Apartment',
+        'agency',
+        'workforce',
+        'salesforce',
+        'solution',
+        'industry',
+        'SEO',
+        'service',
+        'integration',
+        'residential',
+        'property',
+        'intelligence',
+        'business',
+        'executive',
+        'dashboard',
+        'planning',
+        'compensation',
+        'engineering',
+        'staffing',
+        'warehouse',
+        'management',
+        'consultant',
+        'Employee',
+        'Develop',
+        'Software',
+        'Chemical',
+        'Treatment',
+        'Advanced',
+        'Recruit',
+        'Asset',
+        'Understanding',
+        'Benefit',
+        'Company',
+        'Vegas',
+        'Application',
+        'Support',
+        'Maintenance',
+        'Hire',
+        'Petroleum',
+        'Engineer',
+        'Certified'
+    ];
+
+    function highlightSpamTitles() {
+        const labels = document.querySelectorAll(
+            '#assigned-tickets-table tbody tr td:first-child label:not(.spamchecked)'
+        );
+
+        labels.forEach(label => {
+            label.classList.add('spamchecked');
+
+            highlightKeywords(label, spamWords, 'spamhighlight');
+        });
+    }
+
     // highlight 'music' in sound info
 
-    const keywords = ['music', 'bpm', '，', 'ai-generated']; // Add more as needed
+    const keywords = ['music', 'loop', 'bpm', '，', 'ai-generated', 'GenAI', 'genai', 'suno']; // Add more as needed
 
     setInterval(() => {
         const divs = document.querySelectorAll('div[id^="collapsable-sound-info-"]:not(.musicchecked)');
@@ -22,9 +107,87 @@
             div.classList.add('musicchecked');
             highlightKeywords(div, keywords);
         });
+        highlightSpamTitles();
     }, 1000);
 
-    function highlightKeywords(root, keywords) {
+    function getModerationCount() {
+        const modLink = $('a[href="/tickets/moderation/"]');
+        if (!modLink.length) return '';
+
+        const text = modLink.text();
+        const match = text.match(/\((\d+)\s+new\)/i);
+        return match ? match[1] : '';
+    }
+
+    function navigateTableSelection(direction) {
+        const $table = $('#assigned-tickets-table');
+        if ($table.length === 0) return;
+
+        const $rows = $table.find('tbody tr:visible');
+        const $selected = $rows.filter('.selected');
+
+        if ($selected.length === 0) {
+            console.log('sel len === 0');
+            $rows.eq(0).find('td:first label')?.click();
+            return;
+        }
+
+        if ($selected.length > 1) {
+            console.log('sel len > 1');
+            const $selectNone = $('#select-none');
+            $selectNone
+                .css('background-color', 'red')
+                .animate({ opacity: 0 }, 50)
+                .animate({ opacity: 1 }, 250, () => {
+                $selectNone.css('background-color', '');
+            });
+            return;
+        }
+
+        const index = $rows.index($selected);
+        let targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+        if (targetIndex < 0 || targetIndex >= $rows.length) return;
+
+        $rows.eq(targetIndex).find('td:first label')?.click();
+    }
+
+    // Add top/bottom borders for continuous blocks of same user
+    function applyUploaderGroupBorders() {
+        const $rows = $('#assigned-tickets-table tbody tr');
+
+        // Clear old borders first
+        $rows.css({
+            'border-top': '',
+            'border-bottom': ''
+        });
+
+        const getUserId = $row => {
+            const $link = $row.find('td:nth-child(2) a[data-modal-content-url]');
+            const url = $link.attr('data-modal-content-url');
+            const match = url?.match(/\/annotations\/(\d+)\//);
+            return match ? match[1] : null;
+        };
+
+        let prevId = null;
+
+        $rows.each(function (i) {
+            const $row = $(this);
+            const currId = getUserId($row);
+            const nextId = i + 1 < $rows.length ? getUserId($rows.eq(i + 1)) : null;
+
+            if (currId && currId !== prevId) {
+                $row.css('border-top', '1px solid #000');
+            }
+            if (currId && currId !== nextId) {
+                $row.css('border-bottom', '1px solid #000');
+            }
+
+            prevId = currId;
+        });
+    }
+
+    function highlightKeywords(root, keywords, className = 'muischighlight') {
         // 1. Collect all text nodes first
         const textNodes = [];
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
@@ -42,7 +205,7 @@
 
             keywords.forEach(keyword => {
                 const regex = new RegExp(`(${escapeRegExp(keyword)})`, 'gi');
-                modifiedText = modifiedText.replace(regex, '<span class="muischighlight">$1</span>');
+                modifiedText = modifiedText.replace(regex, `<span class="${className}">$1</span>`);
             });
 
             if (modifiedText !== originalText) {
@@ -59,26 +222,274 @@
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
-
     // minify navigation
-    $('ul.navbar-messages.center a.nav-link').each(function() {
+    const moderationCount = getModerationCount();
+
+    $('ul.navbar-messages.center a.nav-link').each(function () {
         const text = $(this).text().trim();
+
         if (text.startsWith('Assign sounds')) {
-            $(this).text('Assign');
+            $(this).text(
+                `Assign${moderationCount ? ' (' + moderationCount + ')' : ''}`
+            );
+
         } else if (text.startsWith('Your queue')) {
             const match = text.match(/\((\d+)\)/);
             const count = match ? match[1] : '';
             $(this).text(`Queue${count ? ' (' + count + ')' : ''}`);
+
         } else if (text.startsWith('Moderation guide')) {
             $(this).text('Guide');
         }
     });
+
 
     // minify commands
     $('#select-all').text('All');
     $('#select-other').text('User');
     $('#select-none').text('None');
     $('#stop-sounds').text('Stop');
+
+    // sort table feature START
+
+    // Add "Sort" dropdown after the last link
+    (function () {
+        console.log('[Tampermonkey] Adding Sort dropdown');
+
+        const STORAGE_KEY = 'assignedTicketsSortMode';
+
+        const container = document.querySelector('#select-all')?.parentElement;
+        if (!container) {
+            console.log('[Tampermonkey] Container not found');
+            return;
+        }
+
+        // Create dot separator
+        const dotSpan = document.createElement('span');
+        dotSpan.className = 'h-spacing-left-1 h-spacing-1 text-grey';
+        dotSpan.textContent = '·';
+
+        // Create select dropdown
+        const select = document.createElement('select');
+        select.id = 'sort-table-select';
+        select.className = 'bw-link--grey cursor-pointer';
+        select.style.background = 'transparent';
+        select.style.border = 'none';
+        select.style.padding = '0';
+        select.style.font = 'inherit';
+
+        // Options
+        const options = [
+            { value: 'none', label: 'None', title: 'No sorting (default)' },
+            { value: 'alpha', label: 'Alpha', title: 'Alphabetic sorting' },
+            { value: 'zlpha', label: 'Zlpha', title: 'Reverse alphabetic sorting' },
+            { value: 'qty', label: 'Qty', title: 'By number of rows' },
+            { value: 'ytq', label: 'Ytq', title: 'Reverse by number of rows' }
+        ];
+
+        options.forEach(opt => {
+            const o = document.createElement('option');
+            o.value = opt.value;
+            o.textContent = opt.label;
+            o.title = opt.title;
+            select.appendChild(o);
+        });
+
+        container.appendChild(dotSpan);
+        container.appendChild(select);
+
+        console.log('[Tampermonkey] Sort dropdown added');
+
+        let originalRows = null;
+
+        function applySort(mode) {
+            const table = document.querySelector('#assigned-tickets-table');
+            if (!table) {
+                console.log('[Tampermonkey] Table not found');
+                return;
+            }
+
+            const rows = Array.from(table.querySelectorAll('tr'));
+            if (rows.length === 0) {
+                console.log('[Tampermonkey] No rows found');
+                return;
+            }
+
+            // Save original order once
+            if (!originalRows) {
+                originalRows = rows.slice();
+            }
+
+            const header = rows.find(row => row.querySelectorAll('th').length > 0);
+            const bodyRows = rows.filter(row => row !== header);
+
+            const nonDeferredRows = bodyRows.filter(row => !row.classList.contains('deferred'));
+            const deferredRows = bodyRows.filter(row => row.classList.contains('deferred'));
+
+            let sortedRows;
+
+            let nonDeferredSorted = [];
+            let deferredSorted = [];
+
+            if (mode === 'alpha' || mode === 'zlpha') {
+                const dir = mode === 'zlpha' ? -1 : 1;
+
+                const comparator = (a, b) => {
+                    const aText = a.cells[1]?.textContent.trim() || '';
+                    const bText = b.cells[1]?.textContent.trim() || '';
+                    return dir * aText.localeCompare(bText, undefined, {
+                        numeric: true,
+                        sensitivity: 'base'
+                    });
+                };
+
+                nonDeferredSorted = nonDeferredRows.slice().sort(comparator);
+                deferredSorted = deferredRows.slice().sort(comparator);
+                console.log('[Tampermonkey] Applied alphabetical sort', mode);
+            } else if (mode === 'qty' || mode === 'ytq') {
+                const dir = mode === 'ytq' ? -1 : 1;
+
+                const buildFreqMap = rows => {
+                    const map = {};
+                    rows.forEach(row => {
+                        const name = row.cells[1]?.textContent.trim() || '';
+                        map[name] = (map[name] || 0) + 1;
+                    });
+                    return map;
+                };
+
+                const nonDeferredFreq = buildFreqMap(nonDeferredRows);
+                const deferredFreq = buildFreqMap(deferredRows);
+
+                const makeComparator = freqMap => (a, b) => {
+                    const aText = a.cells[1]?.textContent.trim() || '';
+                    const bText = b.cells[1]?.textContent.trim() || '';
+
+                    const diff = (freqMap[bText] || 0) - (freqMap[aText] || 0);
+                    if (diff !== 0) return dir * diff;
+
+                    return dir * aText.localeCompare(bText, undefined, {
+                        numeric: true,
+                        sensitivity: 'base'
+                    });
+                };
+
+                nonDeferredSorted = nonDeferredRows.slice().sort(makeComparator(nonDeferredFreq));
+                deferredSorted = deferredRows.slice().sort(makeComparator(deferredFreq));
+
+                console.log('[Tampermonkey] Applied quantity sort (separated)', mode);
+            }
+            else {
+                // Restore original order (excluding deferred)
+                nonDeferredSorted = originalRows.filter(
+                    row => row !== header && !row.classList.contains('deferred')
+                );
+                deferredSorted = originalRows.filter(
+                    row => row !== header && row.classList.contains('deferred')
+                );
+
+                console.log('[Tampermonkey] Restored original order');
+            }
+
+            // Merge sorted + deferred rows (keeping deferred positions)
+            const finalRows = [...nonDeferredSorted, ...deferredSorted];
+
+            const tbody = table.tBodies[0] || table.querySelector('tbody');
+            if (!tbody) return;
+
+            finalRows.forEach(row => tbody.appendChild(row));
+            applyUploaderGroupBorders();
+        }
+
+        // Handle dropdown change
+        select.addEventListener('change', () => {
+            const mode = select.value;
+            localStorage.setItem(STORAGE_KEY, mode);
+            applySort(mode);
+        });
+
+        // Restore stored mode on page load
+        const storedMode = localStorage.getItem(STORAGE_KEY) || 'none';
+        select.value = storedMode;
+
+        // Apply only if not "none" and table exists
+        if (storedMode !== 'none') {
+            applySort(storedMode);
+        }
+    })();
+
+    // sort table feature END
+
+    // Add "CpSel" control to copy selected ticket links to clipboard
+(function () {
+    console.log('[Tampermonkey] Adding CpSel button');
+
+    // Locate the toolbar container (same one used by existing controls)
+    const container = document.querySelector('#select-all')?.parentElement;
+    if (!container) {
+        console.log('[Tampermonkey] CpSel container not found');
+        return;
+    }
+
+    // Create separator dot to match UI style
+    const dot = document.createElement('span');
+    dot.className = 'h-spacing-left-1 h-spacing-1 text-grey';
+    dot.textContent = '·';
+
+    // Create CpSel link/button
+    const cpSel = document.createElement('a');
+    cpSel.id = 'copy-selected-tickets';
+    cpSel.className = 'bw-link--grey cursor-pointer';
+    cpSel.href = 'javascript:void(0);';
+    cpSel.textContent = 'CpSel';
+    cpSel.title = 'Copy selected ticket links to clipboard';
+
+    // Click handler: gather ticket links from rows marked with class="selected"
+    cpSel.addEventListener('click', async () => {
+        const rows = document.querySelectorAll('#assigned-tickets-table tr.selected');
+
+        // Extract href from the link in the last table cell
+        const links = Array.from(rows)
+            .map(row => row.querySelector('td:last-child a')?.href)
+            .filter(Boolean);
+
+        if (!links.length) {
+            alert('No selected tickets found.');
+            return;
+        }
+
+        const text = links.join('\n');
+
+        // Copy to clipboard (modern API with fallback)
+        try {
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+            }
+
+            // Built-in message box showing how many links were copied
+            alert(`Copied ${links.length} ticket link${links.length === 1 ? '' : 's'} to clipboard.`);
+
+        } catch (err) {
+            console.error('[Tampermonkey] Clipboard copy failed', err);
+            alert('Failed to copy ticket links.');
+        }
+    });
+
+    // Insert the control into the toolbar
+    container.appendChild(dot);
+    container.appendChild(cpSel);
+
+    console.log('[Tampermonkey] CpSel button added');
+})();
 
     // minify settings
     function updateCheckboxLabelText(forId, newText) {
@@ -107,11 +518,16 @@
         if (statusText === 'Accepted') statusTd.text('a');
         else if (statusText === 'Deferred') statusTd.text('d');
 
-        // Replace '#x' text inside <a> in 5th td with 't', preserving <a>
+        // Replace '#x' text inside <a> in 5th td with 't' and make entire td clickable
         const refTd = $tds.eq(4);
         const $link = refTd.find('a');
+
         if ($link.length && /^#\d+$/.test($link.text().trim())) {
             $link.text('t');
+
+            // Make the <a> fill the <td> and override styles
+            $link.attr('style', `line-height: ${refTd.height()}px !important;`);
+            $link.addClass('ticket-link');
         }
 
         // Replace date in 3rd td with days ago (e.g., "3d")
@@ -129,21 +545,6 @@
         }
     });
 
-    // count repeat users to identify solo sounds
-    var userCounter = {};
-    $('table#assigned-tickets-table tr:not(.deferred)').each(function(){
-        let user = $(this).find('td:nth-child(2)').text();
-        if (user in userCounter) { userCounter[user] += 1; }
-        else { userCounter[user] = 1; }
-    });
-
-    $('table#assigned-tickets-table tr:not(.deferred)').each(function(){
-        let user = $(this).find('td:nth-child(2)').text();
-        if (userCounter[user] == 1) {
-            $(this).find('td:nth-child(2)').addClass('onlyone');
-        }
-    });
-
     // close modal by clicking outside of it https://stackoverflow.com/a/37573735/188159
     $('body').click(function (event) {
         if(!$(event.target).closest('.modal-content').length && $(event.target).is('.modal-wrapper')) {
@@ -153,6 +554,45 @@
 
     // rest of stuff
     let text_sep = "<span class='h-spacing-left-1 h-spacing-1 text-grey'>·</span>"
+
+    let loop = ['loop', '✋loop🔁', `Thank you for sharing.
+
+If generated with AI, please reveal what <b>AI generation service, model and query was used</b> in the <b>description</b>, and add the <b>tag "GenAI"</b> (press "<b>Edit sound description</b>").
+
+Since this is musical content, please make sure the description includes clear musical metadata (<b>BPM [e.g. "97bpm" tag], key, time signature/chords</b>). (<a href="https://freesound.org/help/faq/#can-i-upload-music-or-songs">music FAQ entry</a>)
+
+Please ensure the loop does not contain copyrighted samples or melodies including not being (or close to) a repackaging of DAW samples—see for example <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45201/">this GarageBand thread</a> for more info.
+
+If not already the case, please use the "<b>music</b>" category for loops/compositions/melodies, see <a href="https://freesound.org/help/faq/#the-broad-sound-taxonomy">Taxonomy FAQ entry</a>.`]
+
+    let bpm = ['bpm', '✋bpm🔁', `Thank you for sharing.
+
+For loops please add bpm <b>as a tag</b> (ideally no dash) like:
+932bpm
+
+Effect:
+___bpm tag not added: your sound is hard to find in a <a href="https://freesound.org/search/?q=136bpm">sea of 40k+ sounds</a>.
+___bpm tag added: your sound is listed in the precise <a href="https://freesound.org/browse/tags/?f=tag:%22136bpm%22">tag filter results</a>.
+
+If not already the case: please ensure the title contains ‘Loop’ or ‘Looping’ and ideally the bpm as well, e.g. “Something Something 932BPM Loop” (this is just an example).
+
+If not already the case: please use the "<b>music</b>" category for loops/compositions/melodies
+
+Additional information: <a href="https://freesound.org/help/faq/#can-i-upload-music-or-songs">music FAQ entry</a> and <a href="https://freesound.org/help/faq/#the-broad-sound-taxonomy">Taxonomy FAQ entry</a>
+
+(To make changes press "Edit sound description")`]
+
+    let thx1 = ['thx1', '✅thx👍', `Thank you for the detailed description!`]
+    let thx2 = ['thx2', '✅thx🎤👍', `Thank you for including the recording device!`]
+    let thx3 = ['thx3', 'thx❔', `Thank you for sharing! <a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">More details</a> (e.g. recorder/mic/software/tools used, more tags) can help users and make the sound easier to find. (press "Edit sound description")`]
+
+    let explain = ['explain', '⚠', `General moderation information:
+- Moderation depends on the free time of volunteers
+- Uploads by other users can lead to a high work load which can affect precision
+- Some moderators chose to use template texts to lower workload
+- Moderators sometimes do not research user history/details and moderate sounds based on its title/description/tags alone to lower workload
+- Questions about details like origin, sources, samples, licenses and generative AI often are posed "just in case" based on the difficulty of identifying that information`]
+
     let text_language = `Hello and thank you for contributing to Freesound.
 We would love to publish it but could you possibly add English title, description and tags first?
 
@@ -166,11 +606,74 @@ Many thanks!
 
 Please note this ticket might time out in two weeks without reply. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
 
+    let adult = ['adult', '🔞', `Thank you for sharing. Despite audio of this nature having been approved on Freesound previously, this volunteer moderator considers it impossible to ensure this material is legal and appropriate. The recommendation is to remove it via https://freesound.org/home/sounds/manage/pending_moderation/
+
+<a href="https://www.reddit.com/r/gonewildaudio/wiki/index/">r/gonewildaudio</a> might be an appropriate place to share such audio.
+
+Should this be unsatisfactory, please contact admins via https://freesound.org/contact/
+
+Thank you for your understanding.`]
+
+    let adult_ok = ['adult-ok', '✅🔞', `Thank you for sharing. The sound is now published.
+
+No action is necessary, unless:
+1. If the age of the voice performer makes this illegal in Barcelona, Catalan, Spain, EU, please delete this upload
+2. If the voice performer did not actively consent with the sharing of this recording here, please delete this upload
+Deleting is possible via https://freesound.org/home/sounds/manage/published/
+
+If none of the above applies, no action is necessary. No comment is necessary. Please do not add private/identifying information.
+
+Please that other similar kind of audio might be rejected. <a href="https://www.reddit.com/r/gonewildaudio/wiki/index/">r/gonewildaudio</a> might be an appropriate place to share such audio.
+
+Thank you for your understanding.`]
+
+    let songs = ['songs', '🎶songs&music🎶', `Thank you for sharing.
+
+Publishing music is not in scope of Freesound. Please see <a href="https://freesound.org/help/faq/#can-i-upload-music-or-songs">FAQ entry "Can I upload music or songs?"</a> which includes sites more suitable for sharing music. It was updated in late 2025.
+
+For game music, opengameart.org might also be appropriate.
+
+Please remove music that does not fit Freesound via https://freesound.org/home/sounds/manage/pending_moderation/ or let us know if the updated rules are unclear.
+
+Thank you for your understanding.`]
+
+    let musicdel = ['musicdel', '🛇🎶', `Thank you for sharing.
+
+Publishing music is not in scope of Freesound. Please see <a href="https://freesound.org/help/faq/#can-i-upload-music-or-songs">FAQ entry "Can I upload music or songs?"</a> which includes sites more suitable for sharing music. It was updated in late 2025.
+
+Thank you for your understanding.`]
+
+    let melody = ['melody', 'melody', `Thank you for sharing. From the description some details are not instantly clear:
+1. Did you create this recording or is this taken from somewhere else (website, DAW, sampled from copyrighted music)?
+2. Is the melody your own creation or is it taken from somewhere else (DAW, midi pack, cover of copyrighted music)?
+3. Is this entirely or to an essential degree a third party sample/loop?
+4. Is the melody or the audio ai-generated?
+
+#1, #2 and #3 would likely make it impossible to relicense the result under the chosen license. Please provide details so we can try to find out details.
+
+#4 would require adding details like "GenAI" tag and stating service and prompt used in the description. (press "edit sound description")
+
+If this is copyrighted audio that cannot be licensed under your chosen license, please remove via <a href="https://freesound.org/home/sounds/manage/pending_moderation/">pending file manager</a>.
+
+Many thanks!`]
+
+    let samples = ['samples', 'samples', `Please clarify whether pre-made samples were used. If yes, please let us know which ones. Unfortunately many sample packs/sites prohibit creating audio for sound libraries like Freesound.
+
+Many thanks!
+
+If this was generated with AI, please add "GenAI" to the tags and reveal the service, model and query used to the description.
+
+Please note this ticket might time out in two weeks without reply. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`]
+
+    let stereomono = ['stereomono', 'stereomono', `Thank you for sharing. It seems the audio is unintentionally stereo but only one of the channels contains audio. Would it be possible for you to extract a mono file for upload and delete this file via <a href="https://freesound.org/home/sounds/manage/pending_moderation/">pending file manager</a>?
+
+Many thanks!`]
+
     let youtube = ['youtube', '©YT', `Thank you for your contribution! However, please note that sounds taken from YouTube or similar websites can be legally problematic.
 
 Many YouTube channels that share sound effects or music labeled as "copyright free" or "royalty free" often do not own the rights to those sounds. Unfortunately, this means we usually cannot verify whether such material is legally safe to share here, or if it was copied from commercial sound libraries, cartoons, or other copyrighted sources.
 
-Please understand that even when knowing the link to the original source in most cases it will not be possible to confirm the sound's legality or compatibility with any Freesound license. If that is the case, please remove the upload via https://freesound.org/home/sounds/manage/pending_moderation/
+Please understand that even when knowing the link to the original source in most cases it will not be possible to confirm the legality of the sound or compatibility with any Freesound license. If that is the case, please remove the upload via https://freesound.org/home/sounds/manage/pending_moderation/
 
 Thank you for helping keep Freesound safe and legal for all users.`]
 
@@ -264,7 +767,7 @@ If it is yours, can you please edit title/tags/description to be descriptive of 
 
 "<a href="https://freesound.org/help/faq/#how-should-i-describe-my-sounds">How should I describe my sounds?</a>" has more info.
 
-If this was generated with AI, please add "ai-generated" to the tags and reveal the service, model and query used to the description.
+If this was generated with AI, please add "GenAI" to the tags and reveal the service, model and query used to the description.
 
 (The sound might get deleted after 2 weeks of no action taken. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>)
 
@@ -361,7 +864,7 @@ Please add info like
 
 Were pre-made loops used? If yes, please let us know which ones. Unfortunately some loop packs prohibit creating music for sound libraries like Freesound.
 
-If this is mainly AI generated content please add "ai-generated" to the tags and reveal the service, model and query used to the description.
+If this is mainly AI generated content please add "GenAI" to the tags and reveal the service, model and query used to the description.
 
 If not yours, please clarify the origin. Many thanks!
 
@@ -371,7 +874,7 @@ Please note this ticket might time out in two weeks without reply. <a href="http
 CC0 permits anybody else to use the work in any way they want, including redistribution without attribution. CC-BY requires attribution. CC-BY-NC does too, and additionally prohibits commercial use.
 If no license is suitable, please remove the file via https://freesound.org/home/sounds/manage/pending_moderation/
 
-Please note that music is not the focus of Freesound. To make it more related, describe the music in more detail, for example what instruments are used, what the tempo/bpm is if known, what the genre/mood is if applicable, and if it was generated with AI: include "ai-generated" tag, what service/model and prompt was used.
+Please note that music is not the focus of Freesound. To make it more related, describe the music in more detail, for example what instruments are used, what the tempo/bpm is if known, what the genre/mood is if applicable, and if it was generated with AI: include "GenAI" tag, what service/model and prompt was used.
 
 It looks like some notes/instruments/samples/sound effects can be extracted from this track with relative ease. Because all licenses on Freesound allow this, the original samples must allow this. Please clarify the origin of the affected samples used.
 
@@ -396,7 +899,7 @@ Please note this ticket might time out in two weeks without reply. <a href="http
     let text_aigen =
         `Thank you for sharing. We are pursuing higher description standards.
 
-If generated with AI, please reveal what AI generation service, model and query was used in the description, and add the tag "ai-generated" (press "Edit sound description").
+If generated with AI, please reveal what AI generation service, model and query was used in the description, and add the tag "GenAI" (press "Edit sound description").
 
 If the file is not yours, please clarify the origin.
 
@@ -464,12 +967,15 @@ Please note this ticket might time out in two weeks without reply. <a href="http
 
     // Add quick moderation buttons
     let text_all_buttons =
-        `<a class='morebuttons' id='quick-device' data-text='` + text_deviceplz + `' title='✅ but 🎤?'>✅🎤?</a>` + text_sep +
-        `<a class='morebuttons' id='quick-tools' data-text='` + text_toolsplz + `' title='✅ but 🔨?'>✅🔨?</a>` + text_sep +
-        `<a class='morebuttons' id='quick-both' data-text='` + text_bothplz + `' title='✅ but 🎤🔨?'>✅🎤🔨?</a>` + text_sep +
-        `<a class='morebuttons' id='quick-musictagplz' data-text='` + text_musictagplz + `' title="add 'music' tag">✅'music'</a>` + text_sep +
-        `<a class='morebuttons' id='quick-shortmusic' data-text='` + text_shortmusicplz + `' title='✅🎵 but 1🕑/🔨?'>✅🎵/🕑/🔨?</a>` + text_sep +
-        `<a class='morebuttons' id='quick-tags' data-text='` + text_tagsplz + `' title='✅ but 🏷?'>✅🏷?</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + thx1[0] + `' data-text='` + thx1[2] + `'>` + thx1[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + thx2[0] + `' data-text='` + thx2[2] + `'>` + thx2[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + thx3[0] + `' data-text='` + thx3[2] + `'>` + thx3[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + explain[0] + `' data-text='` + explain[2] + `'>` + explain[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-device' data-text='` + text_deviceplz + `' title='🗹 but 🎤?'>🗹🎤❔</a>` + text_sep +
+        `<a class='morebuttons' id='quick-tools' data-text='` + text_toolsplz + `' title='🗹 but 🔨?'>🗹🔨❔</a>` + text_sep +
+        `<a class='morebuttons' id='quick-both' data-text='` + text_bothplz + `' title='🗹 but 🎤🔨?'>🗹🎤🔨❔</a>` + text_sep +
+        `<a class='morebuttons' id='quick-musictagplz' data-text='` + text_musictagplz + `' title="add 'music' tag">🗹'music'</a>` + text_sep +
+        `<a class='morebuttons' id='quick-tags' data-text='` + text_tagsplz + `' title='🗹 but tags?'>🗹tags</a>` + text_sep +
         `<a class='morebuttons' id='quick-language' data-action='Defer' data-text='` + text_language + `' title='plz fix language'>✋🌎lng</a>` + text_sep +
         `<a class='morebuttons' id='quick-timeout' data-action='Defer' data-text='\n\nPlease note this ticket might time out in two weeks. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.' title='timeout in 2 weeks '>✋🕑2w</a>` + text_sep +
         `<a class='morebuttons' id='quick-silent' data-action='Defer' data-text='` + text_silent + `' title='silent, please re-upload'>✋🔇</a>` + text_sep +
@@ -479,16 +985,21 @@ Please note this ticket might time out in two weeks without reply. <a href="http
         `<a class='morebuttons' id='quick-synth' data-action='Defer' data-text='` + text_synth + `'>✋🎹💻⚙️🎵sampled</a>` + text_sep +
         `<a class='morebuttons' id='quick-aimusic' data-action='Defer' data-text='` + text_aimusic + `'>✋🤖🎶﹖</a>` + text_sep +
         `<a class='morebuttons' id='quick-musicallow' data-action='Defer' data-text='` + text_musicallow + `'>✋🗎music🎹🎶﹖</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + samples[0] + `' data-action='Defer' data-text='` + samples[2] + `'>` + samples[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + loop[0] + `' data-action='Defer' data-text='` + loop[2] + `'>` + loop[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + bpm[0] + `' data-action='Defer' data-text='` + bpm[2] + `'>` + bpm[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-aigen' data-action='Defer' data-text='` + text_aigen + `'>✋🤖🤖🤖﹖</a>` + text_sep +
-        `<a class='morebuttons' id='quick-clarify' data-action='Defer' data-text='` + text_clarify + `'>✋clarify origin﹖</a>` + text_sep +
-        `<a class='morebuttons' id='quick-clarify' data-action='Defer' data-text='` + text_podcast + `'>✋🎙️podcast🎙️</a>` + text_sep +
-        `<a class='morebuttons' id='quick-clarify' data-action='Defer' data-text='` + text_tax + `'>🎵tax🎵</a>` + text_sep +
+        `<a class='morebuttons' id='quick-clarify1' data-action='Defer' data-text='` + text_clarify + `'>✋clarify origin﹖</a>` + text_sep +
+        `<a class='morebuttons' id='quick-clarify2' data-action='Defer' data-text='` + text_podcast + `'>✋🎙️podcast🎙️</a>` + text_sep +
+        `<a class='morebuttons' id='quick-clarify3' data-action='Defer' data-text='` + text_tax + `'>🎵tax🎵</a>` + text_sep +
         `<a class='morebuttons' id='quick-buggy' data-action='Defer' data-text='` + text_buggy + `' title='buggy'>✋💻💀﹖</a>` + text_sep +
         `<a class='morebuttons' id='quick-soundtrap' data-action='Defer' data-text='` + text_soundtrap + `'>✋🎵Soundtrap</a>` + text_sep +
         `<a class='morebuttons' id='quick-copyright' data-action='Defer' data-text='` + text_copyright + `'>✋©©©</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + songs[0] + `' data-action='Defer' data-text='` + songs[2] + `'>` + songs[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-copymusic' data-action='Delete' data-text='` + text_copymusic + `'>🛇🎵©</a>` + text_sep +
         `<a class='morebuttons' id='quick-meme' data-action='Delete' data-text='` + text_meme + `'>🛇meme</a>` + text_sep +
         `<a class='morebuttons' id='quick-game' data-action='Delete' data-text='` + text_game + `'>🛇🎮🕹</a>` + text_sep +
+        `<a class='morebuttons' id='quick-'` + musicdel[0] + `' data-action='Delete' data-text='` + musicdel[2] + `'>` + musicdel[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-identify' data-action='Delete' data-text='` + text_identify + `'>🛇❓❓</a>` + text_sep +
         `<a class='morebuttons' id='quick-filehost' data-action='Defer' data-text='` + text_filehost + `' title='file host?'>✋📁host</a>` + text_sep +
         `<a class='morebuttons' id='quick-howto' data-text='` + text_howto + `'>﹖Howto</a>` + text_sep +
@@ -496,8 +1007,12 @@ Please note this ticket might time out in two weeks without reply. <a href="http
         `<a class='morebuttons' id='quick-` + bgmusic[0] + `' data-action='Defer' data-text='` + bgmusic[2] + `'>` + bgmusic[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-` + title[0] + `' data-action='Defer' data-text='` + title[2] + `'>` + title[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-` + description[0] + `' data-action='Defer' data-text='` + description[2] + `'>` + description[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + melody[0] + `' data-action='Defer' data-text='` + melody[2] + `'>` + melody[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + stereomono[0] + `' data-action='Defer' data-text='` + stereomono[2] + `'>` + stereomono[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-lazystudent' data-action='Defer' data-text='` + text_lazystudent + `'>✋lazy🌎👨‍🎓</a>` + text_sep +
         `<a class='morebuttons' id='quick-lazytags' data-action='Defer' data-text='` + text_lazytags + `'>✋more tags 🎨🤝⚛🎓</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + adult_ok[0] + `' data-text='` + adult_ok[2] + `'>` + adult_ok[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + adult[0] + `' data-action='Defer' data-text='` + adult[2] + `'>` + adult[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-spam' data-action='Defer' data-text='spam'>✋💣spam</a>` + text_sep
     $("#template-responses > span:nth-child(1)").after(text_all_buttons);
 
@@ -555,9 +1070,13 @@ Please note this ticket might time out in two weeks without reply. <a href="http
     // add css
     const style = document.createElement('style');
     style.textContent = `
-a.morebuttons { background-color: white; }
+a.morebuttons { background-color: white; color: black; }
 tr > td:nth-child(2).onlyone { background-color: PeachPuff !important; border-top: 1px solid #333; border-bottom: 1px solid #333; }
 span.muischighlight {background-color: yellow;}
+
+span.spamhighlight {
+    background-color: pink;
+}
 `
     // Insert CSS for flash animation
     style.innerHTML += `
@@ -665,57 +1184,36 @@ padding: 4px;
     // Initial run
     checkCommentsSection();
 
-    /* 2025-06 upgrade: CTRL+arrow key for up/down navigation in sound list for quick comparison of mass uploads */
+    /* 2025-06 upgrade, 2026-01 update: CTRL+arrow key for up/down navigation in sound list for quick comparison of mass uploads */
 
     $(document).on('keydown', function (e) {
+
+        const target = e.target;
+        const tag = target.tagName ? target.tagName.toLowerCase() : '';
+        const isEditable =
+              target.isContentEditable ||
+              tag === 'textarea' ||
+              (tag === 'input' && !['button', 'checkbox', 'radio', 'submit', 'reset'].includes(target.type));
+
         // Only trigger on Ctrl + ArrowUp or ArrowDown and ignore repeats
-        if ((e.ctrlKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) && !e.originalEvent.repeat) {
-            const $table = $('#assigned-tickets-table');
-            if ($table.length === 0) return;
+        if (e.ctrlKey && !e.originalEvent.repeat) {
 
-            const $rows = $table.find('tbody tr');
-            const $selected = $rows.filter('.selected');
-
-            // If not exactly one selected row
-            if ($selected.length === 0) { // select first
-                const $firstRowLabel = $rows.eq(0).find('td:first label');
-                if ($firstRowLabel.length) $firstRowLabel.click();
-                return;
-            } else if ($selected.length > 1) { // abort and warn
-                const $selectNone = $('#select-none');
-                $selectNone.css('background-color', 'red')
-                    .animate({ opacity: 0 }, 50)
-                    .animate({ opacity: 1 }, 250, function () {
-                    $selectNone.css('background-color', '');
-                });
+            if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && isEditable) {
                 return;
             }
 
-            const index = $rows.index($selected);
-            let $targetRow;
-
-            if (e.key === 'ArrowUp' && index > 0) {
-                $targetRow = $rows.eq(index - 1);
-            } else if (e.key === 'ArrowDown' && index < $rows.length - 1) {
-                $targetRow = $rows.eq(index + 1);
+            if (e.key === 'ArrowUp') {
+                navigateTableSelection('up');
+                return;
             }
-
-            if ($targetRow && $targetRow.length) {
-                const $label = $targetRow.find('td:first label');
-                if ($label.length) $label.click();
+            if (e.key === 'ArrowDown') {
+                navigateTableSelection('down');
+                return;
             }
-
-            return; // prevent fallthrough
         }
 
         // --- Audio seeking ---
         if ((e.ctrlKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) && !e.originalEvent.repeat) {
-            const target = e.target;
-            const tag = target.tagName ? target.tagName.toLowerCase() : '';
-            const isEditable =
-                  target.isContentEditable ||
-                  tag === 'textarea' ||
-                  (tag === 'input' && !['button', 'checkbox', 'radio', 'submit', 'reset'].includes(target.type));
 
             console.log(`keydown detected: tag=${tag}, editable=${isEditable}`);
 
@@ -740,6 +1238,7 @@ padding: 4px;
         }
 
     });
+
 
     /* 2025-06 upgrade: color users if present multiple times in list */
 
@@ -774,31 +1273,7 @@ padding: 4px;
         });
     }
 
-    // Add top/bottom borders for continuous blocks of same user
-    const getUserId = $row => {
-        const $link = $row.find('td:nth-child(2) a[data-modal-content-url]');
-        const url = $link.attr('data-modal-content-url');
-        const match = url?.match(/\/annotations\/(\d+)\//);
-        return match ? match[1] : null;
-    };
-
-    let prevId = null;
-    $rows.each(function (i) {
-        const $row = $(this);
-        const currId = getUserId($row);
-
-        const nextId = i + 1 < $rows.length ? getUserId($rows.eq(i + 1)) : null;
-
-        if (currId && currId !== prevId) {
-            $row.css('border-top', '1px solid #000');
-        }
-        if (currId && currId !== nextId) {
-            $row.css('border-bottom', '1px solid #000');
-        }
-
-        prevId = currId;
-    });
-
+    applyUploaderGroupBorders();
 
     // Utility: generate visually distinct color from ID
     function idToColor(id) {
