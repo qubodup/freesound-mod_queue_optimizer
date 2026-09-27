@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         More buttons in Freesound Moderation 2026
 // @namespace    https://qubodup.github.io/
-// @version      2026-05-10
+// @version      2026-09-27
 // @description  Reduce burnout
 // @author       qubodup
 // @match        https://freesound.org/tickets/moderation/assigned/*
@@ -563,7 +563,7 @@ Since this is musical content, please make sure the description includes clear m
 
 Please ensure the loop does not contain copyrighted samples or melodies including not being (or close to) a repackaging of DAW samples—see for example <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45201/">this GarageBand thread</a> for more info.
 
-If not already the case, please use the "<b>music</b>" category for loops/compositions/melodies, see <a href="https://freesound.org/help/faq/#the-broad-sound-taxonomy">Taxonomy FAQ entry</a>.`]
+If not already the case, please use the "<b>music</b>" category for loops/compositions/melodies, see <a href="https://freesound.org/help/broad-sound-taxonomy/">Taxonomy info</a>.`]
 
     let bpm = ['bpm', '✋bpm🔁', `Thank you for sharing.
 
@@ -578,7 +578,7 @@ If not already the case: please ensure the title contains ‘Loop’ or ‘Loopi
 
 If not already the case: please use the "<b>music</b>" category for loops/compositions/melodies
 
-Additional information: <a href="https://freesound.org/help/faq/#can-i-upload-music-or-songs">music FAQ entry</a> and <a href="https://freesound.org/help/faq/#the-broad-sound-taxonomy">Taxonomy FAQ entry</a>
+Additional information: <a href="https://freesound.org/help/faq/#can-i-upload-music-or-songs">music FAQ entry</a> and <a href="https://freesound.org/help/broad-sound-taxonomy/">Taxonomy info</a>
 
 (To make changes press "Edit sound description")`]
 
@@ -606,11 +606,9 @@ Many thanks!
 
 Please note this ticket might time out in two weeks without reply. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
 
-    let adult = ['adult', '🔞', `Thank you for sharing. Despite audio of this nature having been approved on Freesound previously, this volunteer moderator considers it impossible to ensure this material is legal and appropriate. The recommendation is to remove it via https://freesound.org/home/sounds/manage/pending_moderation/
+    let adult = ['adult', '🔞', `Thank you for sharing. I appears this material is not appropriate and that it is impossible to ensure that it is legal, not just regarding copyright but also in regards to adult content legislation and privacy rights.
 
 <a href="https://www.reddit.com/r/gonewildaudio/wiki/index/">r/gonewildaudio</a> might be an appropriate place to share such audio.
-
-Should this be unsatisfactory, please contact admins via https://freesound.org/contact/
 
 Thank you for your understanding.`]
 
@@ -637,6 +635,18 @@ Please remove music that does not fit Freesound via https://freesound.org/home/s
 
 Thank you for your understanding.`]
 
+    let songs2 = ['songs2', '🎶musLoop?🎶', `Thank you for sharing.
+
+Publishing music is not in scope of Freesound. Please see <a href="https://freesound.org/help/faq/#can-i-upload-music-or-songs">FAQ entry "Can I upload music or songs?"</a> which includes sites more suitable for sharing music. It was updated in late 2025.
+
+For game music, opengameart.org might also be appropriate.
+
+However there exceptions, for example stems, loops, riffs, solo instrumentals, and more listed in the FAQ entry. If this upload fits the exceptions, please describe it in detail, for example instruments/samples/(type of) software used and bpm (eg. as "928bpm" tag without dash) where applicable. See FAQ entry for more info.
+
+If this upload however does not match the scope of Freesound, please remove via https://freesound.org/home/sounds/manage/pending_moderation/ or let us know if the updated rules are unclear.
+
+Thank you for your understanding.`]
+
     let musicdel = ['musicdel', '🛇🎶', `Thank you for sharing.
 
 Publishing music is not in scope of Freesound. Please see <a href="https://freesound.org/help/faq/#can-i-upload-music-or-songs">FAQ entry "Can I upload music or songs?"</a> which includes sites more suitable for sharing music. It was updated in late 2025.
@@ -658,6 +668,8 @@ If this is copyrighted audio that cannot be licensed under your chosen license, 
 Many thanks!`]
 
     let samples = ['samples', 'samples', `Please clarify whether pre-made samples were used. If yes, please let us know which ones. Unfortunately many sample packs/sites prohibit creating audio for sound libraries like Freesound.
+
+Packs included with DAW also are often restricted, see for example info on <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45201/">GarageBand</a>, <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45132/">Soundtrap</a>, <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45087/">Sound Ideas</a>, <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45208/">EZDrummer</a>, <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45148/">WA Production</a>, <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45171/">Cymatics FM</a>, <a href="https://freesound.org/forum/legal-help-and-attribution-questions/45437/">Splice</a>.
 
 Many thanks!
 
@@ -793,7 +805,7 @@ If you would like to find out what you can upload, please take a look at <a href
 
 Thank you for your understanding!`
 
-    let text_tax = `Thank you for sharing, however please use the "music" category for loops/compositions/melodies, see <a href="https://freesound.org/help/faq/#the-broad-sound-taxonomy">Taxonomy FAQ entry</a>. (press "Edit sound description")`
+    let text_tax = `Thank you for sharing, however please use the "music" category for loops/compositions/melodies, see <a href="https://freesound.org/help/broad-sound-taxonomy/">Taxonomy info</a>. (press "Edit sound description")`
 
     let text_podcast =
         `Thank you for sharing, however Freesound is not suitable for podcasts. An exception could be made for an extremely thoroughly described podcast, with the description covering:
@@ -965,12 +977,15 @@ Many thanks!
 
 Please note this ticket might time out in two weeks without reply. <a href="https://freesound.org/home/sounds/manage/pending_moderation/">Manage your files here</a>.`
 
+    let publicpermission = ['publicpermission', '🙏may?', `Thank you for sharing. Please note:<ul><li>"If you record a single person, always ask their permission to upload the sounds" (<a href="https://freesound.org/help/faq/#what-sounds-are-legal-to-put-on-freesound">"What sounds are legal to put on freesound?" - Frequently Asked Questions</a>)</li><li>"original street performances (with permission)" (<a href="https://freesound.org/help/faq/#can-i-upload-music-or-songs">"Can I upload music or songs?" - Frequently Asked Questions</a>)</li></ul>`]
+
     // Add quick moderation buttons
     let text_all_buttons =
         `<a class='morebuttons' id='quick-` + thx1[0] + `' data-text='` + thx1[2] + `'>` + thx1[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-` + thx2[0] + `' data-text='` + thx2[2] + `'>` + thx2[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-` + thx3[0] + `' data-text='` + thx3[2] + `'>` + thx3[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-` + explain[0] + `' data-text='` + explain[2] + `'>` + explain[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + publicpermission[0] + `' data-text='` + publicpermission[2] + `'>` + publicpermission[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-device' data-text='` + text_deviceplz + `' title='🗹 but 🎤?'>🗹🎤❔</a>` + text_sep +
         `<a class='morebuttons' id='quick-tools' data-text='` + text_toolsplz + `' title='🗹 but 🔨?'>🗹🔨❔</a>` + text_sep +
         `<a class='morebuttons' id='quick-both' data-text='` + text_bothplz + `' title='🗹 but 🎤🔨?'>🗹🎤🔨❔</a>` + text_sep +
@@ -996,6 +1011,7 @@ Please note this ticket might time out in two weeks without reply. <a href="http
         `<a class='morebuttons' id='quick-soundtrap' data-action='Defer' data-text='` + text_soundtrap + `'>✋🎵Soundtrap</a>` + text_sep +
         `<a class='morebuttons' id='quick-copyright' data-action='Defer' data-text='` + text_copyright + `'>✋©©©</a>` + text_sep +
         `<a class='morebuttons' id='quick-` + songs[0] + `' data-action='Defer' data-text='` + songs[2] + `'>` + songs[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + songs2[0] + `' data-action='Defer' data-text='` + songs2[2] + `'>` + songs2[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-copymusic' data-action='Delete' data-text='` + text_copymusic + `'>🛇🎵©</a>` + text_sep +
         `<a class='morebuttons' id='quick-meme' data-action='Delete' data-text='` + text_meme + `'>🛇meme</a>` + text_sep +
         `<a class='morebuttons' id='quick-game' data-action='Delete' data-text='` + text_game + `'>🛇🎮🕹</a>` + text_sep +
@@ -1012,7 +1028,7 @@ Please note this ticket might time out in two weeks without reply. <a href="http
         `<a class='morebuttons' id='quick-lazystudent' data-action='Defer' data-text='` + text_lazystudent + `'>✋lazy🌎👨‍🎓</a>` + text_sep +
         `<a class='morebuttons' id='quick-lazytags' data-action='Defer' data-text='` + text_lazytags + `'>✋more tags 🎨🤝⚛🎓</a>` + text_sep +
         `<a class='morebuttons' id='quick-` + adult_ok[0] + `' data-text='` + adult_ok[2] + `'>` + adult_ok[1] + `</a>` + text_sep +
-        `<a class='morebuttons' id='quick-` + adult[0] + `' data-action='Defer' data-text='` + adult[2] + `'>` + adult[1] + `</a>` + text_sep +
+        `<a class='morebuttons' id='quick-` + adult[0] + `' data-action='Delete' data-action='Defer' data-text='` + adult[2] + `'>` + adult[1] + `</a>` + text_sep +
         `<a class='morebuttons' id='quick-spam' data-action='Defer' data-text='spam'>✋💣spam</a>` + text_sep
     $("#template-responses > span:nth-child(1)").after(text_all_buttons);
 
